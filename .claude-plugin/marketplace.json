@@ -1,0 +1,24 @@
+{
+  "name": "dev-stack-marketplace",
+  "owner": {
+    "name": "dev-stack",
+    "email": ""
+  },
+  "metadata": {
+    "description": "One-command dev orchestration with AI-optimized tool routing, sub-system selection, dependency graphs, and parallel agent dispatch",
+    "version": "7.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "dev-stack",
+      "source": "./plugins/dev-stack",
+      "description": "One-command dev orchestration - AI-optimized tool routing (lib-router), sub-system selection (speckit/superpowers/direct), dependency graph execution, unified quality-gatekeeper",
+      "version": "7.0.0",
+      "author": { "name": "dev-stack" },
+      "keywords": ["orchestration", "tdd", "bdd", "ddd", "automation", "workflow", "owasp", "security", "performance"],
+      "category": "productivity",
+      "strict": true
+    }
+  ]
+}

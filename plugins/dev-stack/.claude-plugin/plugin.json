@@ -1,0 +1,7 @@
+{
+  "name": "dev-stack",
+  "version": "7.0.0",
+  "description": "One-command dev orchestration — fast-path routing, workflow-specific optimizations, parallel agent dispatch, quality gate modes. Just /dev-stack {task}",
+  "author": { "name": "dev-stack" },
+  "keywords": ["orchestration", "tdd", "bdd", "ddd", "automation", "workflow", "owasp", "security", "performance"]
+}
