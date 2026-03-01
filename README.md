@@ -6,7 +6,7 @@
 
 *SDD • DDD • BDD • TDD • Intelligent Routing • Quality Gates*
 
-[![Version](https://img.shields.io/badge/version-7.0.0-blue.svg)](https://github.com/1827mk/dev-stack)
+[![Version](https://img.shields.io/padge/version-7.1.0-blue.svg)](https://github.com/1827mk/dev-stack)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai/code)
 
@@ -405,6 +405,17 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 
 ## 🗓️ Changelog
 
+### v7.1.0 (2026-03-01)
+
+**Command Restructure**
+
+- 🔧 **Category-prefixed commands** for better organization
+  - Info: `info-status`, `info-tools`, `info-help`, `info-adr`
+  - Quality: `quality-check`, `quality-review`, `quality-audit`, `quality-drift`
+  - Session: `session-resume`, `session-snapshot`, `session-retro`
+  - Git: `git-pr`, `git-impact`, `git-parallel`
+- 🗑️ Removed `/dev-stack:dev` (use `/dev-stack:dev-stack` instead)
+
 ### v7.0.0 (2026-03-01)
 
 **Major Rewrite**
@@ -417,7 +428,6 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 - ✨ Parallel agent dispatch for faster execution
 - ✨ Real-time status line updates
 - ✨ Desktop notifications for gate events
-- ✨ **Category-prefixed commands** for better organization (21 commands in 5 categories)
 
 ---
 
