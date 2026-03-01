@@ -1,5 +1,5 @@
 ---
-description: Start any dev task - auto-orchestrates team, quality gates, and workflow
+description: Smart entry point - auto-orchestrates team, quality gates, and workflow
 ---
 
 Spawn orchestrator subagent with:
@@ -18,10 +18,10 @@ prompt: |
 **Quick Examples:**
 
 ```
-/dev-stack fix login bug
-/dev-stack add user authentication
-/dev-stack refactor database layer
-/dev-stack review security
+/dev-stack:dev-stack fix login bug
+/dev-stack:dev-stack add user authentication
+/dev-stack:dev-stack refactor database layer
+/dev-stack:dev-stack review security
 ```
 
 **What happens (v7.0):**
@@ -37,20 +37,24 @@ prompt: |
 
 **Direct Workflow Commands (Faster):**
 
-Skip classification entirely with these shortcuts:
-
 | Command | Workflow | Optimizations |
 |---------|----------|---------------|
-| `/dev-stack:bug {desc}` | bug_fix | Skip architect, minimal spec |
 | `/dev-stack:feature {desc}` | new_feature | Full team, quick quality |
+| `/dev-stack:bug {desc}` | bug_fix | Skip architect, minimal spec |
 | `/dev-stack:hotfix {desc}` | hotfix | Minimal team, no gates |
 | `/dev-stack:refactor {desc}` | refactor | Skip domain analysis |
 | `/dev-stack:security {desc}` | security_patch | Full OWASP scan |
+| `/dev-stack:plan {desc}` | spike | Analysis only |
 
 ---
 
-**Other useful commands:**
-- `/dev-stack:help` - Full command reference
-- `/dev-stack:status` - See active features
-- `/dev-stack:dev {id}` - Continue specific feature
-- `/dev-stack:tools` - See available MCP tools
+**Other Commands by Category:**
+
+| Category | Commands |
+|----------|----------|
+| **Info** | `:info-status` `:info-tools` `:info-adr` `:info-help` |
+| **Quality** | `:quality-check` `:quality-review` `:quality-audit` `:quality-drift` |
+| **Session** | `:session-resume` `:session-snapshot` `:session-retro` |
+| **Git** | `:git-pr` `:git-impact` `:git-parallel` |
+
+Run `/dev-stack:info-help` for full command reference.
