@@ -1,6 +1,8 @@
-# dev-stack v8.0.0 — Technical Blueprint
+# dev-stack v9.0.0 — Technical Blueprint
 
 > **Internal Plugin Documentation** — Detailed architecture, agents, commands, and configuration for developers.
+>
+> **v9.0.0 Hybrid Architecture**: 145 tools, 12 agents, 12 commands, 7 skills, 6 hooks
 
 ---
 
@@ -25,7 +27,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     dev-stack Architecture                      │
+│                     dev-stack v9.0.0 Architecture               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   USER INPUT                                                    │
@@ -35,29 +37,40 @@
 │   │   agents    │ ◀── Smart Router (orchestrator logic)        │
 │   │   .md       │     - Keyword classification                  │
 │   └──────┬──────┘     - Workflow selection                      │
-│          │            - Team assembly                            │
+│          │            - Team assembly (12 agents)               │
 │          ▼                                                       │
 │   ┌─────────────┐                                               │
 │   │  commands/  │ ◀── Workflow Entry Points                     │
-│   │   *.md      │     - 11 unified commands                     │
+│   │   *.md      │     - 12 unified commands (+ :init)           │
 │   └──────┬──────┘     - Auto-routing to skills                  │
 │          │                                                       │
 │          ▼                                                       │
 │   ┌─────────────┐                                               │
-│   │  skills/    │ ◀── Internal Libraries                        │
-│   │   lib-*     │     - lib-router: Tool mapping                │
+│   │  skills/    │ ◀── Internal Libraries (7 skills)            │
+│   │   lib-*     │     - lib-router: 12 intents + fallbacks      │
 │   │   orch-*    │     - lib-workflow: Classification            │
 │   └──────┬──────┘     - lib-domain: DDD/BDD                     │
 │          │              - lib-tdd: Test cycle                    │
+│          │              - lib-testing: Test strategies (NEW)    │
 │          │              - lib-intelligence: Snapshot/Drift      │
 │          ▼                                                       │
 │   ┌─────────────┐                                               │
-│   │   hooks/    │ ◀── Event Handlers                            │
+│   │   hooks/    │ ◀── Event Handlers (6 hooks)                 │
 │   │   scripts/  │     - SessionStart: Initialize state          │
 │   │   prompts/  │     - UserPromptSubmit: Auto-routing          │
 │   └─────────────┘     - PreToolUse: Guard dangerous ops         │
 │                       - PostToolUse: Status line update         │
 │                       - Notification: Desktop alerts            │
+│                       - PreCommit: Quality gate (NEW)           │
+│                                                                 │
+│   ┌─────────────┐                                               │
+│   │  MCP Tools  │ ◀── 145 Tools Integrated                     │
+│   │             │     - serena (26): Symbol-aware ops           │
+│   │             │     - memory (9): Knowledge graph             │
+│   │             │     - doc-forge (16): Document processing     │
+│   │             │     - filesystem (15): File operations        │
+│   │             │     - context7 (2): Library docs              │
+│   └─────────────┘                                               │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -120,7 +133,7 @@ plugins/dev-stack/
 │
 ├── README.md                    # This file (technical blueprint)
 │
-├── agents/                      # 11 Agent Instructions
+├── agents/                      # 12 Agent Instructions
 │   ├── orchestrator.md          # Central router
 │   ├── domain-analyst.md        # DDD/BDD specs
 │   ├── solution-architect.md    # Architecture + ADRs
@@ -131,9 +144,10 @@ plugins/dev-stack/
 │   ├── devops-engineer.md       # Deployment + CI/CD
 │   ├── team-coordinator.md      # Team communication
 │   ├── performance-engineer.md  # Performance analysis
-│   └── documentation-writer.md  # Documentation generation
+│   ├── documentation-writer.md  # Documentation generation
+│   └── data-engineer.md         # Database operations (NEW v9.0)
 │
-├── commands/                    # 11 Unified Commands
+├── commands/                    # 12 Unified Commands
 │   ├── agents.md                # Smart router (entry point)
 │   ├── bug.md                   # Bug fix workflow
 │   ├── feature.md               # Feature workflow
@@ -144,7 +158,8 @@ plugins/dev-stack/
 │   ├── git.md                   # Unified git operations
 │   ├── info.md                  # Unified info operations
 │   ├── quality.md               # Unified quality operations
-│   └── session.md               # Unified session operations
+│   ├── session.md               # Unified session operations
+│   └── init.md                  # Project initialization (NEW v9.0)
 │
 ├── hooks/
 │   ├── hooks.json               # Hook registration
@@ -845,6 +860,7 @@ rm -rf .specify/          # Protect spec directory
 
 | Version | Date | Key Changes |
 |---------|------|-------------|
+| 9.0.0 | 2026-03-01 | Hybrid Architecture: 145 tools, 12 agents, 12 commands, 7 skills, 6 hooks |
 | 8.0.0 | 2026-03-01 | 11 unified commands (down from 21) |
 | 7.7.0 | 2026-03-01 | Interactive menu |
 | 7.0.0 | 2026-03-01 | Major rewrite, 11 agents |
@@ -854,4 +870,4 @@ rm -rf .specify/          # Protect spec directory
 ---
 
 *Last updated: 2026-03-01*
-*Plugin version: 8.0.0*
+*Plugin version: 9.0.0*

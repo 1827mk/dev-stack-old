@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/version-8.0.0-blue?style=for-the-badge" alt="Version">
+<img src="https://img.shields.io/badge/version-9.0.0-blue?style=for-the-badge" alt="Version">
 <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License">
 <img src="https://img.shields.io/badge/Claude%20Code-Compatible-purple?style=for-the-badge" alt="Claude Code">
 
@@ -10,7 +10,7 @@
 
 *One command. Full team. Zero overhead.*
 
-**SDD** • **DDD** • **BDD** • **TDD** • **Intelligent Routing** • **Quality Gates**
+**Hybrid Architecture** • **145 Tools** • **SDD** • **DDD** • **BDD** • **TDD** • **Intelligent Routing**
 
 <br>
 
@@ -26,6 +26,35 @@
 
 **dev-stack** transforms how you build software with Claude Code. Just describe what you want — it automatically assembles specialized AI agents, enforces quality gates, and delivers production-ready code.
 
+### 🆕 v9.0.0 Hybrid Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    🏗️ HYBRID ARCHITECTURE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │               🎯 SMART ROUTER (Layered)                  │   │
+│   │    Classifier → Workflow Selector → Team Assembler       │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                              │                                   │
+│   ┌──────────────────────────┼───────────────────────────────┐  │
+│   │                    MODULE LAYER                           │  │
+│   ├────────────────┬─────────┴──────────┬────────────────────┤  │
+│   │    CODE        │     KNOWLEDGE       │       DOCS         │  │
+│   │    (Mesh)      │     (Layered)       │      (Modular)     │  │
+│   ├────────────────┼─────────────────────┼────────────────────┤  │
+│   │ serena (26)    │ memory (9)          │ doc-forge (16)     │  │
+│   │ lib-router     │ sequentialthinking  │ fetch (3)          │  │
+│   │ lib-tdd        │ context7 (2)        │ filesystem (15)    │  │
+│   │ lib-testing    │ lib-intelligence    │ web_reader         │  │
+│   └────────────────┴─────────────────────┴────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**145 Tools Integrated** — serena (26), memory (9), doc-forge (16), filesystem (15), context7 (2), + more
+
 ### Why teams love dev-stack
 
 | 😫 Without dev-stack | 🚀 With dev-stack |
@@ -35,6 +64,8 @@
 | No process visibility | **Real-time status tracking** |
 | Ad-hoc workflows | **Optimized workflow selection** |
 | Manual test tracking | **BDD scenario coverage** |
+| Limited tool usage | **145 tools integration** |
+| No project initialization | **:init auto-detection** |
 
 ---
 
@@ -70,11 +101,11 @@
 /dev-stack:agents <describe what you want>
 ```
 
-### 11 Unified Commands
+### 12 Unified Commands
 
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║                    🚀 dev-stack v8.0.0                        ║
+║                    🚀 dev-stack v9.0.0                        ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  📦 CORE WORKFLOWS (6)                                        ║
@@ -94,7 +125,11 @@
 ║                                                               ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  💾 SESSION: /dev-stack:session (resume/retro/snapshot)      ║
+║  💾 SESSION          │  🚀 INIT                              ║
+║  ──────────────────  │  ──────────────────                  ║
+║  /dev-stack:session  │  /dev-stack:init                     ║
+║  (resume/retro/      │  (auto-detect & initialize)          ║
+║   snapshot)          │                                      ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
@@ -122,7 +157,7 @@
 
 ## 👥 Agents
 
-dev-stack assembles **11 specialized AI agents** based on your workflow:
+dev-stack assembles **12 specialized AI agents** based on your workflow:
 
 | Agent | Role | Superpower |
 |:------|:-----|:-----------|
@@ -137,6 +172,7 @@ dev-stack assembles **11 specialized AI agents** based on your workflow:
 | 📊 **performance-engineer** | Optimization | Finds bottlenecks |
 | 📖 **documentation-writer** | Docs | Keeps everything documented |
 | 🤝 **team-coordinator** | Communication | Coordinates the team |
+| 🗄️ **data-engineer** | Database ops | Schema, migrations, ETL |
 
 ---
 
@@ -270,17 +306,28 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 
 ## 🗓️ What's New
 
-### v8.0.0 (2026-03-01)
+### v9.0.0 (2026-03-01) — Hybrid Architecture
 
-**🎉 Unified Smart Commands**
+**🚀 Major Upgrade: 145 Tools Integration**
 
-- **11 commands** (down from 21) — simpler, smarter
-- Each command is a **smart router** that auto-detects intent
-- **Unified operations**: git, info, quality, session all in one
-- **Full tool access**: All commands can use all agents, skills, MCP servers
+- **Hybrid Architecture**: Smart Router + Mixed Modules (CODE Mesh, KNOWLEDGE Layered, DOCS Modular)
+- **12 Commands** (+ `:init` for project initialization)
+- **12 Agents** (+ `data-engineer` for database operations)
+- **7 Skills** (+ `lib-testing` for test strategies)
+- **6 Hooks** (+ `PreCommit` quality gate)
+- **145 Tools**: Full serena (26), memory (9), doc-forge (16), filesystem (15), context7 (2)
+- **Enhanced lib-router**: 12 intents with fallback chains
+- **Enhanced quality-gatekeeper**: serena `think_*` quality checks
+- **PreCommit Hook**: Auto-detects project type, runs lint/typecheck/test/security
 
 <details>
 <summary>📜 View Full Changelog</summary>
+
+### v8.0.0 (2026-03-01)
+- **11 unified commands** (down from 21) — simpler, smarter
+- Each command is a **smart router** that auto-detects intent
+- **Unified operations**: git, info, quality, session all in one
+- **Full tool access**: All commands can use all agents, skills, MCP servers
 
 ### v7.7.0 (2026-03-01)
 - Interactive ASCII menu
