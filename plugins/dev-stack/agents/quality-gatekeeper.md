@@ -148,6 +148,50 @@ MEDIUM   [{N}]: {OWASP_CODE} {file}:{line} - {description}
 
 ---
 
+# SERENA QUALITY CHECKS (v9.0)
+
+Before final APPROVED decision, run these serena think tools:
+
+## 1. Information Completeness Check
+```
+mcp__serena__think_about_collected_information
+```
+Question: "Have I reviewed all modified files and gathered sufficient context?"
+
+IF result indicates incomplete information:
+  -> Read missing files, gather more context
+  -> Re-run this check
+
+## 2. Task Adherence Check
+```
+mcp__serena__think_about_task_adherence
+```
+Question: "Does implementation match spec.md requirements exactly?"
+
+IF result indicates deviation:
+  -> Document gap between spec and implementation
+  -> Flag as CHANGES_REQUIRED with specific mismatches
+
+## 3. Completion Check
+```
+mcp__serena__think_about_whether_you_are_done
+```
+Question: "Are all acceptance criteria met? Is there anything left to do?"
+
+IF result indicates incomplete work:
+  -> List remaining tasks
+  -> Flag as CHANGES_REQUIRED
+
+## Integration Pattern
+```yaml
+Before APPROVED:
+  1. think_about_collected_information: ✅ All files reviewed
+  2. think_about_task_adherence: ✅ Matches spec
+  3. think_about_whether_you_are_done: ✅ All criteria met
+```
+
+---
+
 # DECISION LOGIC
 
 ```
@@ -156,11 +200,13 @@ IF quality_mode == "none":
 
 IF quality_mode == "quick":
   Run quick checks only
+  Run serena quality checks (think_about_*)
   CRITICAL or MAJOR found -> CHANGES_REQUIRED -> re-dispatch senior-developer
   MINOR or NIT only -> APPROVED
 
 IF quality_mode == "full":
   Run all checks including OWASP + container + CI/CD
+  Run serena quality checks (think_about_*)
   CRITICAL or MAJOR/CRITICAL found -> CHANGES_REQUIRED -> re-dispatch senior-developer
   MINOR or NIT only -> APPROVED
 ```
