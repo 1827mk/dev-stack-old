@@ -2,17 +2,19 @@
 description: Show command reference
 ---
 
-# dev-stack v7.0.0 Command Reference
+# dev-stack v7.1.0 Command Reference
 
 ## Smart Entry
 
 ```
-/dev-stack:dev-stack <task>    # Auto-routes to best workflow
+/dev-stack:agents <task>    # Auto-routes to best workflow
 ```
 
 ---
 
-## Core Workflows
+## Commands by Frequency (Most Used First)
+
+### 🔥🔥🔥 Core Workflows (6 commands)
 
 | Command | Use Case | Example |
 |---------|----------|---------|
@@ -23,20 +25,16 @@ description: Show command reference
 | `/dev-stack:security` | Security patches | `/dev-stack:security fix SQLi` |
 | `/dev-stack:plan` | Analysis only | `/dev-stack:plan analyze schema` |
 
----
-
-## Info Commands (`/dev-stack:info-*`)
+### 🔥🔥 Info (4 commands)
 
 | Command | Purpose |
 |---------|---------|
 | `/dev-stack:info-status` | Show active features and progress |
 | `/dev-stack:info-tools` | Show available tools catalog |
-| `/dev-stack:info-adr` | Query Architecture Decision Records |
 | `/dev-stack:info-help` | Show this command reference |
+| `/dev-stack:info-adr` | Query Architecture Decision Records |
 
----
-
-## Quality Commands (`/dev-stack:quality-*`)
+### 🔥🔥 Quality (4 commands)
 
 | Command | Purpose |
 |---------|---------|
@@ -45,9 +43,15 @@ description: Show command reference
 | `/dev-stack:quality-audit` | Security + code review in parallel |
 | `/dev-stack:quality-drift` | Detect spec vs code gaps |
 
----
+### 🔥 Git (3 commands)
 
-## Session Commands (`/dev-stack:session-*`)
+| Command | Purpose |
+|---------|---------|
+| `/dev-stack:git-pr` | Generate PR description |
+| `/dev-stack:git-impact` | Pre-change risk analysis |
+| `/dev-stack:git-parallel` | Run features in parallel worktrees |
+
+### 🔥 Session (3 commands)
 
 | Command | Purpose |
 |---------|---------|
@@ -57,41 +61,34 @@ description: Show command reference
 
 ---
 
-## Git Commands (`/dev-stack:git-*`)
-
-| Command | Purpose |
-|---------|---------|
-| `/dev-stack:git-pr` | Generate PR description |
-| `/dev-stack:git-impact` | Pre-change risk analysis |
-| `/dev-stack:git-parallel` | Run features in parallel worktrees |
-
----
-
 ## Quick Reference Card
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  WORKFLOW           │  INFO          │  QUALITY            │
-│  ─────────          │  ─────         │  ───────            │
-│  :feature           │  :info-status  │  :quality-check     │
-│  :bug               │  :info-tools   │  :quality-review    │
-│  :hotfix            │  :info-adr     │  :quality-audit     │
-│  :refactor          │  :info-help    │  :quality-drift     │
-│  :security          │                │                     │
-│  :plan              │                │                     │
+│  FREQUENCY SORTED (Most Used First)                         │
 ├─────────────────────────────────────────────────────────────┤
-│  SESSION            │  GIT           │                     │
-│  ───────            │  ───           │                     │
-│  :session-resume    │  :git-pr       │                     │
-│  :session-snapshot  │  :git-impact   │                     │
-│  :session-retro     │  :git-parallel │                     │
+│  🔥🔥🔥 WORKFLOWS    │  🔥🔥 INFO        │  🔥🔥 QUALITY    │
+│  ─────────────────    │  ───────────      │  ────────────   │
+│  :feature             │  :info-status     │  :quality-check │
+│  :bug                 │  :info-tools      │  :quality-review│
+│  :hotfix              │  :info-help       │  :quality-audit │
+│  :refactor            │  :info-adr        │  :quality-drift │
+│  :security            │                   │                 │
+│  :plan                │                   │                 │
+├─────────────────────────────────────────────────────────────┤
+│  🔥 GIT               │  🔥 SESSION       │                 │
+│  ───────              │  ───────────      │                 │
+│  :git-pr              │  :session-resume  │                 │
+│  :git-impact          │  :session-snapshot│                 │
+│  :git-parallel        │  :session-retro   │                 │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-**v7.0.0 Features:**
+**v7.1.0 Features:**
+- Smart entry via `/dev-stack:agents`
 - 11 specialized agents with intelligent routing
 - 7 workflow types with optimized team compositions
 - 5 quality gates (DoR, ArchReview, TaskReady, BDDCoverage, DoD)
-- Category-prefixed commands for better organization
+- Commands sorted by usage frequency

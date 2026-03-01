@@ -6,7 +6,7 @@
 
 *SDD • DDD • BDD • TDD • Intelligent Routing • Quality Gates*
 
-[![Version](https://img.shields.io/padge/version-7.1.0-blue.svg)](https://github.com/1827mk/dev-stack)
+[![Version](https://img.shields.io/badge/version-7.2.0-blue.svg)](https://github.com/1827mk/dev-stack)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai/code)
 
@@ -43,7 +43,7 @@
 
 ```bash
 # Just describe what you want - dev-stack handles the rest
-/dev-stack add user authentication with JWT tokens
+/dev-stack:agents add user authentication with JWT tokens
 ```
 
 That's it! dev-stack will:
@@ -60,10 +60,10 @@ That's it! dev-stack will:
 ### Smart Entry Point
 
 ```bash
-/dev-stack:dev-stack <your request>    # Auto-routes to best workflow
+/dev-stack:agents <your request>    # Auto-routes to best workflow
 ```
 
-### Core Workflows (7 commands)
+### 🔥🔥🔥 Core Workflows (6 commands)
 
 | Command | Use Case | Example |
 |---------|----------|---------|
@@ -74,16 +74,16 @@ That's it! dev-stack will:
 | `/dev-stack:security` | Security patches | `/dev-stack:security fix SQL injection` |
 | `/dev-stack:plan` | Analysis only | `/dev-stack:plan analyze database schema` |
 
-### Info Commands (4 commands)
+### 🔥🔥 Info (4 commands)
 
 | Command | Purpose |
 |---------|---------|
 | `/dev-stack:info-status` | Show active features and progress |
 | `/dev-stack:info-tools` | Show available tools catalog |
-| `/dev-stack:info-adr` | Query architecture decisions |
 | `/dev-stack:info-help` | Full command reference |
+| `/dev-stack:info-adr` | Query architecture decisions |
 
-### Quality Commands (4 commands)
+### 🔥🔥 Quality (4 commands)
 
 | Command | Purpose |
 |---------|---------|
@@ -92,21 +92,21 @@ That's it! dev-stack will:
 | `/dev-stack:quality-audit` | Security + code review in parallel |
 | `/dev-stack:quality-drift` | Detect spec vs code gaps |
 
-### Session Commands (3 commands)
-
-| Command | Purpose |
-|---------|---------|
-| `/dev-stack:session-resume` | Resume pending feature |
-| `/dev-stack:session-snapshot` | Save session state |
-| `/dev-stack:session-retro` | Run retrospective |
-
-### Git Commands (3 commands)
+### 🔥 Git (3 commands)
 
 | Command | Purpose |
 |---------|---------|
 | `/dev-stack:git-pr` | Generate PR description |
 | `/dev-stack:git-impact` | Pre-change risk analysis |
 | `/dev-stack:git-parallel` | Run features in parallel worktrees |
+
+### 🔥 Session (3 commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/dev-stack:session-resume` | Resume pending feature |
+| `/dev-stack:session-snapshot` | Save session state |
+| `/dev-stack:session-retro` | Run retrospective |
 
 ---
 
@@ -404,6 +404,14 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 ---
 
 ## 🗓️ Changelog
+
+### v7.2.0 (2026-03-01)
+
+**Smart Entry & Command Organization**
+
+- 🚀 **Renamed smart entry**: `/dev-stack:dev-stack` → `/dev-stack:agents`
+- 📊 **Commands sorted by frequency** (most used first)
+- 📚 Reorganized help documentation with priority ordering
 
 ### v7.1.0 (2026-03-01)
 
