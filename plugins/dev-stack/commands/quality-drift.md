@@ -1,5 +1,5 @@
 ---
-description: Detect gaps between spec.md BDD scenarios and actual codebase. Pass feature ID or leave empty for all.
+description: (Q):Detect gaps between spec.md BDD scenarios and actual code
 ---
 AGENT: orchestrator
 MODE: drift

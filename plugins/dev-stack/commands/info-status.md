@@ -1,5 +1,5 @@
 ---
-description: Show active features and progress
+description: (I):Show active features and progress
 ---
 AGENT: orchestrator
 MODE: status

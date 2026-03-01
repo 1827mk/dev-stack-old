@@ -1,5 +1,5 @@
 ---
-description: Pre-change risk analysis. Pass file path, module name, or domain term to analyze ripple effect.
+description: (G):Pre-change risk analysis — shows ripple effect and dependencies
 ---
 AGENT: orchestrator
 MODE: impact

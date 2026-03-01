@@ -1,5 +1,5 @@
 ---
-description: Generate PR description from spec.md and git diff.
+description: (G):Generate PR description from spec.md and git diff
 ---
 AGENT: orchestrator
 MODE: pr

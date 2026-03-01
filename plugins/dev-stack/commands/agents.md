@@ -1,8 +1,57 @@
 ---
-description: Smart entry point - auto-orchestrates team, quality gates, and workflow
+description: (A):Smart entry point — auto-routes to best workflow (bug/feature/refactor/security/hotfix)
 ---
 
-Spawn orchestrator subagent with:
+IF INPUT IS EMPTY, SHOW THIS MENU FIRST:
+
+```
+╔═══════════════════════════════════════════════════════════════╗
+║                    🚀 dev-stack v7.7.0                        ║
+║              Enterprise Dev Orchestration                     ║
+╠═══════════════════════════════════════════════════════════════╣
+║  ⚡ /dev-stack:agents <task>                                  ║
+║     Smart entry — describe what you want, we route it         ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  📦 CORE WORKFLOWS                                            ║
+║  ─────────────────────────────────────────────────────────── ║
+║  :core-feature    New functionality (full DDD/BDD)            ║
+║  :core-bug        Bug fixes (quick process)                   ║
+║  :core-hotfix     Emergency fixes (no gates)                  ║
+║  :core-refactor   Code improvement (preserves behavior)       ║
+║  :core-security   Security patches (full OWASP)               ║
+║  :core-plan       Read-only analysis                          ║
+║                                                               ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  🔀 GIT           │  📊 QUALITY      │  📁 INFO               ║
+║  ───────────────  │  ──────────────  │  ──────────────        ║
+║  :git-impact      │  :quality-audit  │  :info-adr             ║
+║  :git-parallel    │  :quality-check  │  :info-help            ║
+║  :git-pr          │  :quality-drift  │  :info-status          ║
+║                   │  :quality-review │  :info-tools           ║
+║                                                               ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  💾 SESSION                                                    ║
+║  ─────────────────────────────────────────────────────────── ║
+║  :session-resume    Resume pending feature                    ║
+║  :session-retro     Run retrospective                         ║
+║  :session-snapshot  Save state before switching               ║
+║                                                               ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  Quick Start: /dev-stack:agents fix login bug                 ║
+║  Full Help:   /dev-stack:info-help                            ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+```
+
+THEN ASK USER: "What would you like to work on?"
+
+---
+
+OTHERWISE (INPUT PROVIDED), SPAWN ORCHESTRATOR:
 
 ```
 subagent_type: dev-stack:orchestrator
@@ -24,38 +73,14 @@ prompt: |
 /dev-stack:agents review security
 ```
 
-**What happens:**
-1. Fast-path keyword check (skips classification if obvious)
-2. Classifies your intent (bug/feature/refactor/review/security/spike)
-3. Detects context (greenfield/legacy) for sub-system selection
-4. Routes to appropriate sub-system (speckit/superpowers/direct)
-5. Assembles team using dependency graph
-6. Runs quality gates (quick/full based on workflow)
-7. Reports progress with parallel dispatch
-
 ---
 
-**Commands by Frequency (Most Used First):**
+## Workflow Constraints
 
-| Freq | Category | Commands |
-|------|----------|----------|
-| 🔥🔥🔥 | **Workflows** | `:feature` `:bug` `:hotfix` `:refactor` `:security` `:plan` |
-| 🔥🔥 | **Info** | `:info-status` `:info-tools` `:info-help` `:info-adr` |
-| 🔥🔥 | **Quality** | `:quality-check` `:quality-review` `:quality-audit` `:quality-drift` |
-| 🔥 | **Git** | `:git-pr` `:git-impact` `:git-parallel` |
-| 🔥 | **Session** | `:session-resume` `:session-snapshot` `:session-retro` |
+**ALWAYS follow these rules when selecting commands:**
 
----
-
-**Direct Workflow Shortcuts:**
-
-| Command | Use Case |
-|---------|----------|
-| `/dev-stack:feature` | New functionality |
-| `/dev-stack:bug` | Bug fixes |
-| `/dev-stack:hotfix` | Emergency fixes |
-| `/dev-stack:refactor` | Code improvement |
-| `/dev-stack:security` | Security patches |
-| `/dev-stack:plan` | Analysis only |
-
-Run `/dev-stack:info-help` for full command reference.
+1. **ALWAYS** use `core-plan` before `core-feature` for complex features
+2. **ALWAYS** use `core-security` (not `core-bug`) for vulnerabilities
+3. **ALWAYS** run `quality-check` after implementation
+4. **ALWAYS** run `session-snapshot` before switching branches
+5. **ONLY** use `core-hotfix` for production emergencies

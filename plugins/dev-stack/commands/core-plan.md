@@ -1,5 +1,5 @@
 ---
-description: Read-only analysis mode — produces impact assessment and plan without making changes
+description: (C):Read-only analysis — produces impact assessment, no code changes
 ---
 
 Spawn orchestrator subagent with:

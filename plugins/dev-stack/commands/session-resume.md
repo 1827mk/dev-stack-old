@@ -1,5 +1,5 @@
 ---
-description: Resume a pending feature. Pass feature ID (e.g. 001) or leave empty to see list of all pending specs.
+description: (S):Resume a pending feature (pass ID or empty to list)
 ---
 AGENT: orchestrator
 MODE: resume

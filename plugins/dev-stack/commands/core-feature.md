@@ -1,5 +1,5 @@
 ---
-description: New feature workflow - full process with DDD/BDD
+description: (C):New feature — full DDD/BDD process with all quality gates
 ---
 
 Spawn orchestrator subagent with:

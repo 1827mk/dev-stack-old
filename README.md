@@ -6,7 +6,7 @@
 
 *SDD • DDD • BDD • TDD • Intelligent Routing • Quality Gates*
 
-[![Version](https://img.shields.io/badge/version-7.2.0-blue.svg)](https://github.com/1827mk/dev-stack)
+[![Version](https://img.shields.io/badge/version-7.7.0-blue.svg)](https://github.com/1827mk/dev-stack)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai/code)
 
@@ -57,8 +57,6 @@ That's it! dev-stack will:
 
 ## 🎯 Commands Reference
 
-> **Note:** Commands are sorted alphabetically in Claude Code's command picker.
-
 ### Smart Entry Point
 
 ```bash
@@ -67,24 +65,45 @@ That's it! dev-stack will:
 
 ### All Commands (21 total)
 
-| Category | Commands |
-|----------|----------|
-| **Core Workflows** | `:feature` `:bug` `:hotfix` `:plan` `:refactor` `:security` |
-| **Info** | `:info-adr` `:info-help` `:info-status` `:info-tools` |
-| **Quality** | `:quality-audit` `:quality-check` `:quality-drift` `:quality-review` |
-| **Git** | `:git-impact` `:git-parallel` `:git-pr` |
-| **Session** | `:session-resume` `:session-retro` `:session-snapshot` |
+```
+┌─────────────────────────────────────────────────────────────┐
+│  agents        │ Smart Entry - auto-routes to best workflow │
+├─────────────────────────────────────────────────────────────┤
+│  CORE          │  GIT           │  INFO         │  QUALITY  │
+│  ──────        │  ───────       │  ──────       │  ─────────│
+│  :core-bug     │  :git-impact   │  :info-adr    │  :quality-audit   │
+│  :core-feature │  :git-parallel │  :info-help   │  :quality-check   │
+│  :core-hotfix  │  :git-pr       │  :info-status │  :quality-drift   │
+│  :core-plan    │                │  :info-tools  │  :quality-review  │
+│  :core-refactor│                │               │              │
+│  :core-security│                │               │              │
+├─────────────────────────────────────────────────────────────┤
+│  SESSION       │                                             │
+│  ──────────      │                                             │
+│  :session-resume│                                             │
+│  :session-retro │                                             │
+│  :session-snapshot│                                           │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ### Core Workflows
 
 | Command | Use Case | Example |
 |---------|----------|---------|
-| `/dev-stack:bug` | Bug fixes | `/dev-stack:bug fix null pointer in auth` |
-| `/dev-stack:feature` | New functionality | `/dev-stack:feature add payment processing` |
-| `/dev-stack:hotfix` | Emergency fixes | `/dev-stack:hotfix patch critical XSS` |
-| `/dev-stack:plan` | Analysis only | `/dev-stack:plan analyze database schema` |
-| `/dev-stack:refactor` | Code improvement | `/dev-stack:refactor simplify auth module` |
-| `/dev-stack:security` | Security patches | `/dev-stack:security fix SQL injection` |
+| `/dev-stack:core-bug` | Bug fixes | `/dev-stack:core-bug fix null pointer in auth` |
+| `/dev-stack:core-feature` | New functionality | `/dev-stack:core-feature add payment processing` |
+| `/dev-stack:core-hotfix` | Emergency fixes | `/dev-stack:core-hotfix patch critical XSS` |
+| `/dev-stack:core-plan` | Analysis only | `/dev-stack:core-plan analyze database schema` |
+| `/dev-stack:core-refactor` | Code improvement | `/dev-stack:core-refactor simplify auth module` |
+| `/dev-stack:core-security` | Security patches | `/dev-stack:core-security fix SQL injection` |
+
+### Git Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/dev-stack:git-impact` | Pre-change risk analysis |
+| `/dev-stack:git-parallel` | Run features in parallel worktrees |
+| `/dev-stack:git-pr` | Generate PR description |
 
 ### Info Commands
 
@@ -103,14 +122,6 @@ That's it! dev-stack will:
 | `/dev-stack:quality-check` | Run lint + typecheck + build |
 | `/dev-stack:quality-drift` | Detect spec vs code gaps |
 | `/dev-stack:quality-review` | Code review on changed files |
-
-### Git Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/dev-stack:git-impact` | Pre-change risk analysis |
-| `/dev-stack:git-parallel` | Run features in parallel worktrees |
-| `/dev-stack:git-pr` | Generate PR description |
 
 ### Session Commands
 
@@ -374,7 +385,7 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 
 ```bash
 # Start a new feature
-/dev-stack:feature add shopping cart with Stripe integration
+/dev-stack:core-feature add shopping cart with Stripe integration
 
 # Check progress
 /dev-stack:info-status
@@ -387,7 +398,7 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 
 ```bash
 # Quick bug fix
-/dev-stack:bug fix cart total calculation error
+/dev-stack:core-bug fix cart total calculation error
 
 # Review the fix
 /dev-stack:quality-review
@@ -397,7 +408,7 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 
 ```bash
 # Security vulnerability
-/dev-stack:security fix XSS in product search
+/dev-stack:core-security fix XSS in product search
 
 # Full security audit
 /dev-stack:quality-audit
@@ -416,6 +427,48 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 ---
 
 ## 🗓️ Changelog
+
+### v7.7.0 (2026-03-01)
+
+**Interactive Grouped Menu**
+
+- 📋 **Beautiful ASCII menu**: `/dev-stack:agents` now shows grouped command menu when called without arguments
+- 🎯 **Smart routing**: Menu displayed first, then accepts user input and routes to workflow
+- 📊 **Organized layout**: Commands grouped by category (Core, Git, Info, Quality, Session)
+- 💡 **Interactive UX**: Asks "What would you like to work on?" after showing menu
+
+### v7.6.0 (2026-03-01)
+
+**Visual Category Prefixes**
+
+- 🏷️ **Category badges in descriptions**: `(C):` Core, `(G):` Git, `(I):` Info, `(Q):` Quality, `(S):` Session
+- 👁️ **Instant visual grouping**: See command category at a glance in picker
+- 📊 **Consistent naming**: All 21 commands now have standardized prefixes
+
+### v7.5.0 (2026-03-01)
+
+**Simplified Command Descriptions**
+
+- 📝 **Shorter descriptions**: All commands now have concise, readable descriptions
+- 🎯 **Better picker UX**: No more cluttered multi-line text in command picker
+- ✨ **Commands sorted correctly**: agents → core-* → git-* → info-* → quality-* → session-*
+
+### v7.4.0 (2026-03-01)
+
+**Enhanced Command Context & Workflow Constraints**
+
+- 📝 **Rich descriptions**: All commands now include WORKFLOW, PHASE, USE WHEN context
+- 🎯 **Workflow constraints**: Clear rules for when to use each command
+- 📊 **Decision matrix**: Quick reference for command selection
+- 🤖 **AI-optimized**: Better context helps AI choose the right command
+
+### v7.3.0 (2026-03-01)
+
+**Category-Prefixed Commands**
+
+- 🔧 **Core workflow prefix**: `:bug` → `:core-bug`, `:feature` → `:core-feature`, etc.
+- 📊 **Alphabetical grouping**: Commands now sort by category in picker
+- 📚 Updated all documentation to reflect new naming
 
 ### v7.2.0 (2026-03-01)
 

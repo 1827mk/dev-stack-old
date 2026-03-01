@@ -1,5 +1,5 @@
 ---
-description: Code refactoring - preserves behavior, improves structure
+description: (C):Code refactor — preserves behavior, improves structure
 ---
 
 Spawn orchestrator subagent with:

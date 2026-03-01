@@ -1,5 +1,5 @@
 ---
-description: Run lint + typecheck + build (opt-in quality gate)
+description: (Q):Run lint + typecheck + build (opt-in quality gate)
 ---
 
 Run quality checks based on project type:

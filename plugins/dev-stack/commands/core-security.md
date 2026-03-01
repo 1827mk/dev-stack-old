@@ -1,5 +1,5 @@
 ---
-description: Security patch - full OWASP validation, senior-developer implements fix first
+description: (C):Security patch — full OWASP validation, senior-dev implements first
 ---
 
 Spawn orchestrator subagent with:

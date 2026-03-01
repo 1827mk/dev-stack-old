@@ -1,5 +1,5 @@
 ---
-description: Run retrospective on last delivered feature. Appends learnings to constitution.md.
+description: (S):Run retrospective on last delivered feature
 ---
 AGENT: orchestrator
 MODE: retro

@@ -1,5 +1,5 @@
 ---
-description: Emergency hotfix - minimal process, no gates
+description: (C):Emergency hotfix — minimal process, no gates (production down only)
 ---
 
 Spawn orchestrator subagent with:

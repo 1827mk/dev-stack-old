@@ -1,5 +1,5 @@
 ---
-description: Quick bug fix workflow - skips architect, minimal process
+description: (C):Bug fix — quick workflow, minimal process (skips architect)
 ---
 
 Spawn orchestrator subagent with:
