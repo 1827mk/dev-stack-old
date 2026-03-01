@@ -13,8 +13,8 @@
     {
       "name": "dev-stack",
       "source": "./plugins/dev-stack",
-      "description": "Smart dev orchestration — 8 unified commands (agents/bug/feature/hotfix/plan/refactor/security/git/info/quality/session) with auto-routing",
-      "version": "8.0.0",
+       "      "description": "Hybrid Architecture dev orchestration — 145 tools integration (serena, memory, context7, doc-forge) with auto-routing, quality gates, and pre-commit hooks. Features: init command, test strategies skill, data engineer agent",
+      "version": "9.0.0",
       "author": { "name": "dev-stack" },
       "keywords": ["orchestration", "tdd", "bdd", "ddd", "automation", "workflow", "owasp", "security", "performance"],
       "category": "productivity",

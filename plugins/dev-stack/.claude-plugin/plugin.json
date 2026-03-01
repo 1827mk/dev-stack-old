@@ -1,7 +1,7 @@
 {
   "name": "dev-stack",
-  "version": "8.0.0",
-  "description": "Smart dev orchestration — 8 unified commands with auto-routing. /dev-stack:agents {task} routes to best workflow automatically",
+  "version": "9.0.0",
+  "description": "Hybrid Architecture dev orchestration — 145 tools integration with Smart Router + Mixed Modules. /dev-stack:agents {task} routes to best workflow automatically",
   "author": { "name": "dev-stack" },
-  "keywords": ["orchestration", "tdd", "bdd", "ddd", "automation", "workflow", "owasp", "security", "performance"]
+  "keywords": ["orchestration", "tdd", "bdd", "ddd", "automation", "workflow", "owasp", "security", "performance", "hybrid-architecture", "serena", "memory-mcp"]
 }
