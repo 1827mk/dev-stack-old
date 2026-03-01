@@ -57,56 +57,68 @@ That's it! dev-stack will:
 
 ## 🎯 Commands Reference
 
+> **Note:** Commands are sorted alphabetically in Claude Code's command picker.
+
 ### Smart Entry Point
 
 ```bash
 /dev-stack:agents <your request>    # Auto-routes to best workflow
 ```
 
-### 🔥🔥🔥 Core Workflows (6 commands)
+### All Commands (21 total)
+
+| Category | Commands |
+|----------|----------|
+| **Core Workflows** | `:feature` `:bug` `:hotfix` `:plan` `:refactor` `:security` |
+| **Info** | `:info-adr` `:info-help` `:info-status` `:info-tools` |
+| **Quality** | `:quality-audit` `:quality-check` `:quality-drift` `:quality-review` |
+| **Git** | `:git-impact` `:git-parallel` `:git-pr` |
+| **Session** | `:session-resume` `:session-retro` `:session-snapshot` |
+
+### Core Workflows
 
 | Command | Use Case | Example |
 |---------|----------|---------|
-| `/dev-stack:feature` | New functionality | `/dev-stack:feature add payment processing` |
 | `/dev-stack:bug` | Bug fixes | `/dev-stack:bug fix null pointer in auth` |
+| `/dev-stack:feature` | New functionality | `/dev-stack:feature add payment processing` |
 | `/dev-stack:hotfix` | Emergency fixes | `/dev-stack:hotfix patch critical XSS` |
+| `/dev-stack:plan` | Analysis only | `/dev-stack:plan analyze database schema` |
 | `/dev-stack:refactor` | Code improvement | `/dev-stack:refactor simplify auth module` |
 | `/dev-stack:security` | Security patches | `/dev-stack:security fix SQL injection` |
-| `/dev-stack:plan` | Analysis only | `/dev-stack:plan analyze database schema` |
 
-### 🔥🔥 Info (4 commands)
+### Info Commands
 
 | Command | Purpose |
 |---------|---------|
+| `/dev-stack:info-adr` | Query architecture decisions |
+| `/dev-stack:info-help` | Full command reference |
 | `/dev-stack:info-status` | Show active features and progress |
 | `/dev-stack:info-tools` | Show available tools catalog |
-| `/dev-stack:info-help` | Full command reference |
-| `/dev-stack:info-adr` | Query architecture decisions |
 
-### 🔥🔥 Quality (4 commands)
+### Quality Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/dev-stack:quality-check` | Run lint + typecheck + build |
-| `/dev-stack:quality-review` | Code review on changed files |
 | `/dev-stack:quality-audit` | Security + code review in parallel |
+| `/dev-stack:quality-check` | Run lint + typecheck + build |
 | `/dev-stack:quality-drift` | Detect spec vs code gaps |
+| `/dev-stack:quality-review` | Code review on changed files |
 
-### 🔥 Git (3 commands)
+### Git Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/dev-stack:git-pr` | Generate PR description |
 | `/dev-stack:git-impact` | Pre-change risk analysis |
 | `/dev-stack:git-parallel` | Run features in parallel worktrees |
+| `/dev-stack:git-pr` | Generate PR description |
 
-### 🔥 Session (3 commands)
+### Session Commands
 
 | Command | Purpose |
 |---------|---------|
 | `/dev-stack:session-resume` | Resume pending feature |
-| `/dev-stack:session-snapshot` | Save session state |
 | `/dev-stack:session-retro` | Run retrospective |
+| `/dev-stack:session-snapshot` | Save session state |
 
 ---
 
