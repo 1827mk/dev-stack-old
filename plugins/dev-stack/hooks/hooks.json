@@ -63,6 +63,17 @@
           }
         ]
       }
+    ],
+    "PreCommit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-commit.sh",
+            "timeout": 60
+          }
+        ]
+      }
     ]
   }
 }
