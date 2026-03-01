@@ -1,365 +1,857 @@
-# dev-stack v7.0.0
+# dev-stack v8.0.0 — Technical Blueprint
 
-> **One command for everything.** Auto-orchestrates agents, quality gates, and workflow with AI-optimized tool routing.
+> **Internal Plugin Documentation** — Detailed architecture, agents, commands, and configuration for developers.
 
-## Installation
+---
 
-### Option 1: From Local Path (Recommended for now)
+## Table of Contents
+
+1. [Architecture Overview](#architecture-overview)
+2. [Plugin Structure](#plugin-structure)
+3. [Agents Reference](#agents-reference)
+4. [Commands Reference](#commands-reference)
+5. [Skills Reference](#skills-reference)
+6. [Hooks Reference](#hooks-reference)
+7. [Workflow Classification](#workflow-classification)
+8. [Quality Gates](#quality-gates)
+9. [Configuration](#configuration)
+10. [MCP Integration](#mcp-integration)
+
+---
+
+## Architecture Overview
+
+### Design Philosophy
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     dev-stack Architecture                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   USER INPUT                                                    │
+│       │                                                         │
+│       ▼                                                         │
+│   ┌─────────────┐                                               │
+│   │   agents    │ ◀── Smart Router (orchestrator logic)        │
+│   │   .md       │     - Keyword classification                  │
+│   └──────┬──────┘     - Workflow selection                      │
+│          │            - Team assembly                            │
+│          ▼                                                       │
+│   ┌─────────────┐                                               │
+│   │  commands/  │ ◀── Workflow Entry Points                     │
+│   │   *.md      │     - 11 unified commands                     │
+│   └──────┬──────┘     - Auto-routing to skills                  │
+│          │                                                       │
+│          ▼                                                       │
+│   ┌─────────────┐                                               │
+│   │  skills/    │ ◀── Internal Libraries                        │
+│   │   lib-*     │     - lib-router: Tool mapping                │
+│   │   orch-*    │     - lib-workflow: Classification            │
+│   └──────┬──────┘     - lib-domain: DDD/BDD                     │
+│          │              - lib-tdd: Test cycle                    │
+│          │              - lib-intelligence: Snapshot/Drift      │
+│          ▼                                                       │
+│   ┌─────────────┐                                               │
+│   │   hooks/    │ ◀── Event Handlers                            │
+│   │   scripts/  │     - SessionStart: Initialize state          │
+│   │   prompts/  │     - UserPromptSubmit: Auto-routing          │
+│   └─────────────┘     - PreToolUse: Guard dangerous ops         │
+│                       - PostToolUse: Status line update         │
+│                       - Notification: Desktop alerts            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow
+
+```
+User Request
+    │
+    ▼
+┌───────────────────────────────────────────────────────┐
+│ 1. CLASSIFY (agents.md)                               │
+│    - Keyword detection                                │
+│    - Sequential thinking for ambiguous cases          │
+│    - Confidence threshold check                       │
+└───────────────────────┬───────────────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────────────┐
+│ 2. SELECT WORKFLOW (lib-workflow)                     │
+│    - new_feature → Full DDD/BDD team                  │
+│    - bug_fix → domain → dev → gate → qa               │
+│    - hotfix → dev only                                │
+│    - refactor → architect → dev → gate                │
+│    - security_patch → dev → gate (full) → qa          │
+└───────────────────────┬───────────────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────────────┐
+│ 3. ASSEMBLE TEAM (orchestration)                      │
+│    - Build dependency graph                           │
+│    - Identify parallel execution opportunities        │
+│    - Inject context bundle                            │
+└───────────────────────┬───────────────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────────────┐
+│ 4. EXECUTE (agents + skills)                          │
+│    - Sequential agents with dependencies              │
+│    - Parallel agents where independent                │
+│    - Quality gates between phases                     │
+└───────────────────────┬───────────────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────────────┐
+│ 5. VALIDATE (quality-gatekeeper)                      │
+│    - DoR → ArchReview → TaskReady → BDDCoverage → DoD │
+└───────────────────────────────────────────────────────┘
+```
+
+---
+
+## Plugin Structure
+
+```
+plugins/dev-stack/
+│
+├── .claude-plugin/
+│   └── plugin.json              # Plugin manifest (version, description)
+│
+├── README.md                    # This file (technical blueprint)
+│
+├── agents/                      # 11 Agent Instructions
+│   ├── orchestrator.md          # Central router
+│   ├── domain-analyst.md        # DDD/BDD specs
+│   ├── solution-architect.md    # Architecture + ADRs
+│   ├── tech-lead.md             # Task decomposition
+│   ├── senior-developer.md      # TDD implementation
+│   ├── quality-gatekeeper.md    # Code + security review
+│   ├── qa-engineer.md           # Test coverage validation
+│   ├── devops-engineer.md       # Deployment + CI/CD
+│   ├── team-coordinator.md      # Team communication
+│   ├── performance-engineer.md  # Performance analysis
+│   └── documentation-writer.md  # Documentation generation
+│
+├── commands/                    # 11 Unified Commands
+│   ├── agents.md                # Smart router (entry point)
+│   ├── bug.md                   # Bug fix workflow
+│   ├── feature.md               # Feature workflow
+│   ├── hotfix.md                # Emergency hotfix
+│   ├── plan.md                  # Read-only analysis
+│   ├── refactor.md              # Refactor workflow
+│   ├── security.md              # Security workflow
+│   ├── git.md                   # Unified git operations
+│   ├── info.md                  # Unified info operations
+│   ├── quality.md               # Unified quality operations
+│   └── session.md               # Unified session operations
+│
+├── hooks/
+│   ├── hooks.json               # Hook registration
+│   ├── prompts/                 # Prompt-based hooks
+│   │   ├── checkpoint-reminder.md
+│   │   └── verify-agent-done.md
+│   └── scripts/                 # Shell script hooks
+│       ├── session-start.sh     # Initialize state
+│       ├── auto-router.sh       # Keyword classification
+│       ├── pre-tool-guard.sh    # Block dangerous ops
+│       ├── notify.sh            # Desktop notifications
+│       └── status-line.sh       # Progress updates
+│
+└── skills/                      # Internal Libraries
+    ├── orchestration/           # Central routing
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── boot-sequences.md
+    │       ├── output-formats.md
+    │       └── team-messaging.md
+    ├── lib-router/              # Tool mapping
+    ├── lib-workflow/            # Workflow classification
+    ├── lib-domain/              # DDD/BDD patterns
+    │   ├── SKILL.md
+    │   └── references/
+    │       └── ...
+    ├── lib-tdd/                 # TDD cycle
+    │   ├── SKILL.md
+    │   └── references/
+    │       └── ...
+    └── lib-intelligence/        # Snapshot, drift, impact
+        ├── SKILL.md
+        └── references/
+            └── memory-sync.md
+```
+
+---
+
+## Agents Reference
+
+### Agent Types
+
+| Type | Model | Complexity | Use Case |
+|------|-------|------------|----------|
+| **Orchestrator** | sonnet | High | Routing, team assembly, context injection |
+| **Architect** | sonnet | High | Architecture design, ADRs, layer boundaries |
+| **Developer** | sonnet | High | TDD implementation, code generation |
+| **Analyst** | sonnet | Medium | DDD modeling, BDD scenarios |
+| **Reviewer** | sonnet | Medium | Code review, security validation |
+| **Support** | haiku | Low | Documentation, QA, coordination |
+
+### Agent Details
+
+#### 1. orchestrator.md
+
+```yaml
+Role: Central Router
+Model: sonnet
+Tools: All (Read, Write, Edit, Bash, MCP)
+Responsibilities:
+  - Classify user intent
+  - Select workflow type
+  - Assemble agent team
+  - Build dependency graph
+  - Inject context bundle
+  - Coordinate execution
+  - Handle gate events
+Invoked: Every command
+```
+
+#### 2. domain-analyst.md
+
+```yaml
+Role: DDD/BDD Spec Creator
+Model: sonnet
+Tools: Read, Write, Grep, Glob, MCP (serena, memory)
+Responsibilities:
+  - Extract domain concepts
+  - Define bounded contexts
+  - Create ubiquitous language
+  - Write BDD scenarios (Given/When/Then)
+  - Generate spec.md
+Invoked: new_feature, bug_fix, architecture, spike
+Outputs:
+  - .specify/specs/{id}/spec.md
+  - BDD scenarios (3+ required for DoR gate)
+```
+
+#### 3. solution-architect.md
+
+```yaml
+Role: Architecture Designer
+Model: sonnet
+Tools: Read, Write, Grep, Glob, MCP (serena, memory)
+Responsibilities:
+  - Design system architecture
+  - Define layer boundaries
+  - Write ADRs (Architecture Decision Records)
+  - Generate plan.md
+  - Identify technical risks
+Invoked: new_feature, refactor, architecture
+Outputs:
+  - .specify/specs/{id}/plan.md
+  - .specify/memory/adr/{id}-*.md
+Gate: ArchReview (blocks if plan.md missing or ADRs incomplete)
+```
+
+#### 4. tech-lead.md
+
+```yaml
+Role: Task Decomposer
+Model: sonnet
+Tools: Read, Write, Grep, Glob, MCP (serena, memory)
+Responsibilities:
+  - Decompose plan into atomic tasks
+  - Define task dependencies
+  - Estimate effort (≤4h per task)
+  - Tag tasks with BDD references
+  - Mark [test-first] for TDD
+Invoked: new_feature, architecture
+Outputs:
+  - .specify/specs/{id}/tasks.md
+Gate: TaskReady (blocks if task >4h or no BDD reference)
+```
+
+#### 5. senior-developer.md
+
+```yaml
+Role: TDD Implementer
+Model: sonnet
+Tools: Read, Write, Edit, Bash, MCP (serena, context7)
+Responsibilities:
+  - Write failing tests first (RED)
+  - Implement minimum code (GREEN)
+  - Refactor for quality (REFACTOR)
+  - Run tests after each change
+  - Document complex logic
+Invoked: All code changes
+Workflow:
+  1. Read task from tasks.md
+  2. Find BDD scenario reference
+  3. Write test file first
+  4. Implement code
+  5. Run tests → all pass
+  6. Mark task [x] complete
+```
+
+#### 6. quality-gatekeeper.md
+
+```yaml
+Role: Code + Security Reviewer
+Model: sonnet
+Tools: Read, Grep, Glob, MCP (serena)
+Responsibilities:
+  - Code quality review
+  - Security pattern detection
+  - OWASP Top 10 validation
+  - Container validation
+  - CI/CD pipeline check
+Modes:
+  - quick: Code quality + critical security (default)
+  - full: Complete OWASP + container + CI/CD
+Invoked: After implementation
+Outputs:
+  - Quality report
+  - Security findings
+  - Recommendations
+Gate: DoD (blocks if issues found)
+```
+
+#### 7. qa-engineer.md
+
+```yaml
+Role: Test Coverage Validator
+Model: haiku
+Tools: Read, Grep, Glob, Bash
+Responsibilities:
+  - Map BDD scenarios to tests
+  - Verify exact title match
+  - Run test suite
+  - Report coverage gaps
+  - Validate all scenarios covered
+Invoked: After quality gate
+Outputs:
+  - Coverage report
+  - Missing tests list
+Gate: BDDCoverage (blocks if scenario missing test)
+```
+
+#### 8. devops-engineer.md
+
+```yaml
+Role: Deployment Engineer
+Model: haiku
+Tools: Read, Write, Bash, MCP (serena)
+Responsibilities:
+  - Docker/container validation
+  - CI/CD pipeline configuration
+  - Infrastructure-as-code
+  - Deployment scripts
+  - Environment configuration
+Invoked: Before delivery (new_feature, architecture)
+Outputs:
+  - Dockerfile updates
+  - CI/CD config
+  - Deployment checklist
+```
+
+#### 9. team-coordinator.md
+
+```yaml
+Role: Team Communication
+Model: haiku
+Tools: Read, Write, Bash
+Responsibilities:
+  - Message routing between agents
+  - Shared task visibility
+  - Handoff coordination
+  - Session state management
+Invoked: Complex workflows
+Outputs:
+  - .specify/specs/{id}/team-messages.log
+```
+
+#### 10. performance-engineer.md
+
+```yaml
+Role: Performance Analyst
+Model: sonnet
+Tools: Read, Grep, Glob, Bash
+Responsibilities:
+  - Performance profiling
+  - Bottleneck detection
+  - Load testing strategy
+  - Optimization recommendations
+Invoked: On-demand
+Outputs:
+  - Performance report
+  - Optimization plan
+```
+
+#### 11. documentation-writer.md
+
+```yaml
+Role: Documentation Generator
+Model: haiku
+Tools: Read, Write, Grep, Glob
+Responsibilities:
+  - Generate API documentation
+  - Update README files
+  - Create user guides
+  - Document architecture
+Invoked: After delivery or on-demand
+Outputs:
+  - API docs
+  - README updates
+  - Architecture diagrams
+```
+
+---
+
+## Commands Reference
+
+### Command Architecture
+
+Each command is a **smart router** that:
+1. Accepts natural language input
+2. Classifies intent
+3. Selects workflow
+4. Assembles team
+5. Executes with gates
+
+### Command: `/dev-stack:agents`
+
+```yaml
+Type: Smart Router
+Purpose: Main entry point
+Behavior:
+  - Empty input → Show menu
+  - With input → Classify and route
+Classification:
+  bug/fix/error/issue → :bug
+  feature/add/new/implement → :feature
+  urgent/critical/hotfix → :hotfix
+  refactor/improve/clean → :refactor
+  security/vulnerability → :security
+  analyze/assess/plan → :plan
+Examples:
+  /dev-stack:agents fix login bug
+  /dev-stack:agents add user auth
+  /dev-stack:agents "production is down!"
+```
+
+### Command: `/dev-stack:bug`
+
+```yaml
+Type: Core Workflow
+Purpose: Bug fixes with TDD
+Team: domain-analyst → senior-developer → quality-gatekeeper → qa-engineer
+Gates: DoR, DoD
+Flow:
+  1. domain-analyst: Create minimal spec
+  2. senior-developer: TDD cycle (RED-GREEN-REFACTOR)
+  3. quality-gatekeeper: Quick review
+  4. qa-engineer: Validate tests
+Escalation:
+  - Security issue → /dev-stack:security
+  - Emergency → /dev-stack:hotfix
+Tools: Read, Write, Edit, Bash
+Time: 2-5 minutes
+```
+
+### Command: `/dev-stack:feature`
+
+```yaml
+Type: Core Workflow
+Purpose: New features with full DDD/BDD
+Team: Full team (all 11 agents)
+Gates: DoR → ArchReview → TaskReady → BDDCoverage → DoD
+Flow:
+  1. domain-analyst: spec.md with BDD scenarios
+  2. solution-architect: plan.md with ADRs
+  3. tech-lead: tasks.md with dependencies
+  4. senior-developer: TDD implementation
+  5. quality-gatekeeper: Full review
+  6. qa-engineer: Test validation
+  7. devops-engineer: Deployment prep
+Outputs:
+  - .specify/specs/{id}/spec.md
+  - .specify/specs/{id}/plan.md
+  - .specify/specs/{id}/tasks.md
+Tools: All
+Time: 30-60 minutes
+```
+
+### Command: `/dev-stack:hotfix`
+
+```yaml
+Type: Core Workflow
+Purpose: Emergency fixes (production down only)
+Team: senior-developer only
+Gates: NONE (bypasses all)
+Flow:
+  1. ⚠️ Confirm emergency
+  2. senior-developer: Direct fix
+  3. Manual verification
+  4. Document root cause
+Guards:
+  - Non-emergency → Reject, suggest /bug or /feature
+Bypassed:
+  - spec.md (❌)
+  - plan.md (❌)
+  - code review (❌)
+  - architecture review (❌)
+Warning: "⚠️ Hotfix mode - bypassing quality gates. Use only for emergencies."
+Tools: Read, Write, Edit, Bash
+Time: 5-15 minutes
+```
+
+### Command: `/dev-stack:plan`
+
+```yaml
+Type: Core Workflow
+Purpose: Read-only analysis (no code changes)
+Team: domain-analyst + solution-architect
+Gates: None (read-only)
+Flow:
+  1. Analyze scope
+  2. Identify affected files
+  3. Map dependencies
+  4. Assess risks
+  5. Estimate effort
+  6. Output: analysis.md
+Outputs:
+  - .specify/specs/{id}/analysis.md
+Constraint: 0 files modified
+Tools: Read, Grep, Glob (no Write)
+Time: 2-20 minutes
+```
+
+### Command: `/dev-stack:refactor`
+
+```yaml
+Type: Core Workflow
+Purpose: Code improvement (preserves behavior)
+Team: solution-architect → senior-developer → quality-gatekeeper
+Gates: ArchReview, DoD
+Flow:
+  1. Verify test coverage (if <80%, warn)
+  2. Extract in small steps
+  3. Run tests after each step
+  4. Verify behavior preserved
+  5. Code quality improved
+Guards:
+  - No tests → Block, require tests first
+Safety: High (test-verified)
+Tools: Read, Write, Edit, Bash
+Time: 15-30 minutes
+```
+
+### Command: `/dev-stack:security`
+
+```yaml
+Type: Core Workflow
+Purpose: Security patches with full OWASP
+Team: senior-developer → quality-gatekeeper (full) → qa-engineer
+Gates: DoR, DoD
+Flow:
+  1. Find vulnerability
+  2. Implement fix + input validation
+  3. Output encoding
+  4. Add security tests
+  5. OWASP validation (all 10 categories)
+  6. Security report
+OWASP Categories:
+  1. Injection
+  2. Broken Authentication
+  3. Sensitive Data Exposure
+  4. XML External Entities
+  5. Broken Access Control
+  6. Security Misconfiguration
+  7. Cross-Site Scripting
+  8. Insecure Deserialization
+  9. Using Components with Known Vulnerabilities
+  10. Insufficient Logging & Monitoring
+Tools: Read, Write, Edit, Bash
+Time: 10-20 minutes
+```
+
+### Command: `/dev-stack:git`
+
+```yaml
+Type: Unified Command
+Purpose: Git operations
+Team: devops-engineer
+Sub-operations:
+  impact    → Analyze change ripple effect
+  parallel  → Run multiple features in worktrees
+  pr        → Generate PR description from spec
+Classification:
+  "impact" OR "ripple" OR "affect" → git impact
+  "parallel" OR "simultaneous" → git parallel
+  "pr" OR "pull request" OR "merge" → git pr
+  default → git status
+Tools: Bash (git commands), Read
+Time: <500ms
+```
+
+### Command: `/dev-stack:info`
+
+```yaml
+Type: Unified Command
+Purpose: Information queries
+Team: documentation-writer
+Sub-operations:
+  adr     → Query architecture decisions
+  help    → Full command reference
+  status  → Show progress + velocity
+  tools   → Show available tools catalog
+Classification:
+  "adr" OR "architecture" OR "decision" → info adr
+  "help" OR "commands" → info help
+  "status" OR "progress" → info status
+  "tools" OR "catalog" → info tools
+  default → info help
+Tools: Read, Grep, Glob
+Time: <100ms
+```
+
+### Command: `/dev-stack:quality`
+
+```yaml
+Type: Unified Command
+Purpose: Quality checks
+Team: quality-gatekeeper
+Sub-operations:
+  audit   → Full security + quality scan
+  check   → Lint + typecheck + build
+  drift   → Detect spec vs code gaps
+  review  → Code review on files
+Classification:
+  "audit" OR "full" OR "owasp" → quality audit
+  "check" OR "lint" OR "build" → quality check
+  "drift" OR "gap" OR "sync" → quality drift
+  "review" OR "code review" → quality review
+  default → quality check
+Tools: Read, Grep, Glob, Bash
+Time: 10-60 seconds
+```
+
+### Command: `/dev-stack:session`
+
+```yaml
+Type: Unified Command
+Purpose: Session management
+Team: team-coordinator
+Sub-operations:
+  resume    → Resume pending feature
+  retro     → Run retrospective
+  snapshot  → Save session state
+Classification:
+  "resume" OR "continue" → session resume
+  "retro" OR "retrospective" → session retro
+  "snapshot" OR "save" → session snapshot
+  default → Show session menu
+Tools: Read, Write, Bash
+Time: <500ms
+```
+
+---
+
+## Skills Reference
+
+### Internal Libraries (6 skills)
+
+| Skill | Purpose | Entry Point |
+|-------|---------|-------------|
+| `orchestration` | MODE routing, team dispatch, output formats | `skill:dev-stack:orchestration` |
+| `lib-router` | AI-optimized tool mapping | `skill:dev-stack:lib-router(intent)` |
+| `lib-workflow` | Workflow classification, dependency graphs | `skill:dev-stack:lib-workflow(req)` |
+| `lib-domain` | DDD modeling, BDD authoring | `skill:dev-stack:lib-domain` |
+| `lib-tdd` | TDD cycle, constitution builder | `skill:dev-stack:lib-tdd` |
+| `lib-intelligence` | Snapshot, drift, impact, PR | `skill:dev-stack:lib-intelligence(fn)` |
+
+### lib-router Tool Mapping
+
+```yaml
+code_read:
+  primary: mcp__serena__find_symbol
+  fallback: Read
+
+code_edit:
+  primary: mcp__serena__replace_symbol_body
+  fallback: Edit
+
+code_refs:
+  primary: mcp__serena__find_referencing_symbols
+  fallback: Grep
+
+bug_fix:
+  find: code_read
+  fix: code_edit
+  verify: code_refs
+```
+
+---
+
+## Hooks Reference
+
+### Event Hooks (5 hooks)
+
+| Hook | Event | Script | Purpose |
+|------|-------|--------|---------|
+| SessionStart | Session start | session-start.sh | Initialize state, check onboarding |
+| UserPromptSubmit | User prompt | auto-router.sh | Keyword classification, fast-path routing |
+| PreToolUse | Before tool | pre-tool-guard.sh | Block dangerous operations |
+| PostToolUse | After tool | status-line.sh | Update progress indicator |
+| Notification | Events | notify.sh | Desktop notifications |
+
+### PreToolUse Guards
 
 ```bash
-# Add the local marketplace
-/plugin marketplace add /Users/tanaphat.oiu/.claude/dev-stack-marketplace
-
-# Install the plugin
-/plugin install dev-stack@dev-stack-marketplace
+# Blocked operations:
+rm -rf                    # Recursive delete
+git push --force          # Force push
+git reset --hard          # Hard reset
+DROP TABLE                # SQL destructive
+rm -rf .specify/          # Protect spec directory
 ```
-
-### Option 2: From GitHub (After publishing)
-
-```bash
-# Add the marketplace from GitHub
-/plugin marketplace add YOUR_GITHUB_USERNAME/dev-stack-marketplace
-
-# Install the plugin
-/plugin install dev-stack@dev-stack-marketplace
-```
-
-### Option 3: Test Locally (Development)
-
-```bash
-# Test without installing - loads plugin directly
-claude --plugin-dir /Users/tanaphat.oiu/.claude/dev-stack-marketplace/plugins/dev-stack
-```
-
-### Verify Installation
-
-```
-/plugin
-```
-
-Go to **Installed** tab - should show:
-```
-dev-stack@dev-stack-marketplace (v7.0.0)
-```
-
-### First Time Setup
-
-After installation, run in your project:
-
-```
-/dev-stack:help
-```
-
-This will:
-1. Create `.specify/memory/constitution.md` with project conventions
-2. Set up the spec directory structure
-3. Show available commands
 
 ---
 
-## Quick Start
+## Workflow Classification
+
+### Classification Logic
 
 ```
-/dev-stack build user login feature    -> Full feature workflow
-/dev-stack fix auth bug                -> Bug fix with TDD
-/dev-stack:plan add user auth          -> Read-only analysis
-/dev-stack:status                      -> See progress
+1. FAST-PATH CHECK (keywords):
+   "bug|fix|error|issue" → bug_fix (confidence: 0.9)
+   "feature|add|new|implement" → new_feature (confidence: 0.9)
+   "urgent|critical|hotfix|production down" → hotfix (confidence: 1.0)
+   "refactor|improve|clean|restructure" → refactor (confidence: 0.85)
+   "security|vulnerability|OWASP|CVE" → security_patch (confidence: 0.95)
+   "analyze|assess|plan|design" → architecture (confidence: 0.8)
+   "research|spike|POC|proof of concept" → spike (confidence: 0.8)
+
+2. SEQUENTIAL THINKING (if confidence < 0.5):
+   - Use mcp__sequentialthinking to analyze
+   - Consider context and ambiguity
+   - Make best-effort classification
+
+3. WORKFLOW SELECTION:
+   - confidence >= 0.5 → Use classified workflow
+   - confidence < 0.5 → Ask user for clarification
 ```
 
-## Commands
+### Workflow Team Composition
 
-| Command | What it does |
-|---------|--------------|
-| `/dev-stack {task}` | Main entry - auto-routes to best workflow |
-| `/dev-stack:bug {desc}` | Fast bug fix - skip architect |
-| `/dev-stack:feature {desc}` | New feature - full team |
-| `/dev-stack:hotfix {desc}` | Emergency fix - minimal process |
-| `/dev-stack:refactor {desc}` | Code refactoring |
-| `/dev-stack:security {desc}` | Security patch - full OWASP |
-| `/dev-stack:plan {task}` | Read-only analysis, no code changes |
-| `/dev-stack:dev {id}` | Continue feature {id} from last task |
-| `/dev-stack:status` | Show all active features |
-| `/dev-stack:check` | Run lint + typecheck + build |
-| `/dev-stack:review` | Code review changed files |
-| `/dev-stack:audit` | Security + code review |
-| `/dev-stack:parallel {a,b}` | Run multiple features in parallel |
-| `/dev-stack:pr` | Generate PR from completed spec |
-| `/dev-stack:drift {id}` | Check if spec drifted from code |
-| `/dev-stack:impact {id}` | Analyze change impact |
-| `/dev-stack:adr {query}` | Query architecture decisions |
-| `/dev-stack:retro {id}` | Run retrospective on completed spec |
-| `/dev-stack:snapshot {id}` | Save/restore spec state |
-| `/dev-stack:tools` | Show available MCP tools |
-| `/dev-stack:help` | Full command reference |
-
-## Agents (11 Specialized Agents)
-
-| Agent | Role | When Invoked |
-|-------|------|--------------|
-| **orchestrator** | Central router, team assembly, sub-system selection | Every command |
-| **domain-analyst** | DDD/BDD spec creation | new_feature, bug_fix, architecture, spike |
-| **solution-architect** | Architecture + ADRs | After spec approval |
-| **tech-lead** | Task decomposition | After plan approval |
-| **senior-developer** | TDD implementation | Per task |
-| **qa-engineer** | Test coverage validation | After implementation |
-| **quality-gatekeeper** | Unified code quality + security | After all tasks |
-| **devops-engineer** | Deployment readiness | Before delivery |
-| **team-coordinator** | Agent communication | Throughout workflow |
-| **performance-engineer** | Performance optimization | On demand |
-| **documentation-writer** | Documentation | On demand |
+| Workflow | Team | Gates | Avg Time |
+|----------|------|-------|----------|
+| new_feature | domain + architect + tech-lead + dev + gate + qa + devops | All 5 | 30-60 min |
+| bug_fix | domain + dev + gate + qa | DoR, DoD | 2-5 min |
+| hotfix | dev only | None | 5-15 min |
+| refactor | architect + dev + gate | ArchReview, DoD | 15-30 min |
+| security_patch | dev + gate (full) + qa | DoR, DoD | 10-20 min |
+| architecture | Full team | All 5 | 30-60 min |
+| spike | domain only | None | 10-30 min |
 
 ---
-
-## What's New in v7.0
-
-### 1. AI-Optimized Tool Routing (lib-router)
-
-New `lib-router` skill provides intelligent tool selection:
-
-```
-code_read: [mcp__serena__find_symbol, Read]  # Try serena first, fallback to Read
-code_edit: [mcp__serena__replace_symbol_body, Edit]
-bug_fix: {find: code_read, fix: code_edit, verify: code_refs}
-```
-
-### 2. Sub-System Selection
-
-Orchestrator routes to appropriate sub-system based on context:
-
-| Condition | Sub-System | Reason |
-|-----------|------------|--------|
-| Greenfield + Business Logic | speckit | Structured spec/plan/tasks |
-| Legacy + Complex Bug | superpowers | Root cause + TDD |
-| Hotfix + Quick Fix | direct agents | Minimal overhead |
-| Security Patch | superpowers + direct | OWASP + TDD |
-
-### 3. Dependency Graph Execution
-
-Teams execute using explicit dependency graphs with parallel dispatch:
-
-```
-new_feature:
-  1: [domain-analyst]
-  2: [solution-architect] (after 1)
-  3: [tech-lead] (after 2)
-  4: [senior-developer] (after 3)
-  5: [quality-gatekeeper] (after 4)
-  6: [qa-engineer, devops-engineer] (parallel, after 5)
-```
-
-### 4. Enhanced Fast-Path Routing
-
-Keyword-based workflow detection with expanded vocabulary:
-
-```
-"production down" -> hotfix (immediate)
-"security vulnerability" -> security_patch (high confidence)
-"spike research poc" -> spike (research mode)
-```
-
-### 5. Unified Quality Gatekeeper
-
-Single agent handles both code quality AND security:
-- **quick mode**: Code quality + critical security patterns
-- **full mode**: Complete OWASP Top 10 + container + CI/CD
-
----
-
-## Performance Optimizations
-
-### 1. Fast-Path Routing
-Keyword-based workflow detection skips full classification:
-```
-"fix login bug" -> bug_fix (no sequentialthinking needed)
-"hotfix urgent" -> hotfix (immediate)
-"add new feature" -> new_feature (high confidence)
-```
-
-### 2. Workflow-Specific Agent Skipping
-Not every workflow needs every agent:
-
-| Workflow | Skipped Agents | Time Saved |
-|----------|----------------|------------|
-| hotfix | domain-analyst, architect, tech-lead, qa, devops | ~70% |
-| bug_fix | solution-architect, devops | ~40% |
-| refactor | domain-analyst, qa, devops | ~35% |
-| security_patch | domain-analyst, architect, devops | ~30% |
-
-### 3. Quality Gate Modes
-- **quick**: Code quality + critical security (default for most workflows)
-- **full**: Complete OWASP Top 10 + container + CI/CD (security_patch, architecture)
-- **none**: Skip all checks (spike)
-
-### 4. Context Bundle Injection
-Agents receive pre-read context instead of re-reading files:
-- spec.md, plan.md read once by orchestrator
-- BDD scenarios pre-extracted
-- Ubiquitous language pre-parsed
-
-### 5. Parallel Agent Dispatch
-After quality gate passes, independent agents run in parallel:
-```
-qa-engineer || devops-engineer     (after quality gate)
-```
-
-### 6. Minimal Spec Templates
-Bug fixes use streamlined spec template:
-- No NFRs section
-- No cross-context contracts
-- Focus on fix scenario only
-
----
-
-## Features
-
-### 1. Plan Mode
-Read-only analysis before implementation:
-```
-/dev-stack:plan add user authentication
-```
-Produces `analysis.md` with impact assessment, affected files, and recommendations.
-
-### 2. Agent Teams
-Teammates can message each other during workflow:
-- Shared task list visibility
-- Handoff coordination
-- Message log in `.specify/specs/{id}/team-messages.log`
-
-### 3. Parallel Execution
-Run multiple independent features simultaneously:
-```
-/dev-stack:parallel "add login", "add registration"
-```
-Creates isolated worktrees for each feature.
-
-### 4. Status Line
-Progress shown in status bar during active workflows.
-
-### 5. Checkpointing Awareness
-Reminders about `/rewind` capability at key moments.
-
-### 6. Auto Memory Sync
-Patterns and insights automatically stored in native memory for future reference.
-
-### 7. Notification Hooks
-Desktop notifications when gates pass/fail (macOS and Linux).
-
-### 8. MCP Tool Search Config
-Optimized tool search for environments with many MCP servers.
-
-## How it Works
-
-```
-/dev-stack "add user auth"
-       |
-       v
-+-------------------------------------+
-|  Orchestrator                       |
-|  1. Fast-path check (keywords)      |
-|  2. [Skip if high confidence]       |
-|  3. Classify workflow               |
-|  4. Detect context (greenfield/etc) |
-|  5. Select sub-system               |
-|  6. Build context bundle            |
-|  7. Assemble team with dep graph    |
-|  8. Execute with parallel dispatch  |
-+-------------------------------------+
-```
-
-## Project Structure
-
-```
-.specify/
-+-- memory/
-|   +-- constitution.md    # Project conventions (auto-generated)
-+-- specs/
-    +-- 001-user-auth/
-        +-- spec.md        # Requirements + BDD scenarios
-        +-- plan.md        # Architecture + ADRs
-        +-- tasks.md       # Implementation checklist
-        +-- analysis.md    # Plan mode output (optional)
-        +-- team-messages.log  # Team communication log
-```
 
 ## Quality Gates
 
-| Workflow | TDD | BDD | Security | Review | Quality Mode |
-|----------|-----|-----|----------|--------|--------------|
-| bug_fix | yes | - | quick | yes | quick |
-| new_feature | yes | yes | quick | yes | quick |
-| refactor | - | - | quick | yes | quick |
-| hotfix | - | - | quick | yes | quick |
-| architecture | yes | yes | full | yes | full |
-| security_patch | yes | - | full | yes | full |
-| spike | - | - | - | - | none |
+### Gate Pipeline
 
-## Approval Gates by Workflow
+```
+┌───────┐    ┌────────────┐    ┌────────────┐    ┌───────────┐    ┌───────┐
+│  DoR  │───▶│ ArchReview │───▶│ TaskReady  │───▶│ BDDCover  │───▶│  DoD  │
+└───────┘    └────────────┘    └────────────┘    └───────────┘    └───────┘
+    │              │                 │                 │             │
+    ▼              ▼                 ▼                 ▼             ▼
+ spec.md       plan.md           tasks.md         test files    all pass
+ exists        + ADRs            + BDD refs       + coverage     + build
+ 3+ BDD        + layers          + [test-first]   100% match     passes
+```
 
-| Workflow | Human Approval Required |
-|----------|------------------------|
-| hotfix | None |
-| bug_fix | after_spec |
-| refactor | after_plan |
-| security_patch | after_spec |
-| new_feature | after_spec, after_tasks |
-| architecture | after_spec, after_plan, after_tasks |
-| spike | after_spec |
+### Gate Criteria
+
+| Gate | Criteria | Blocks Agent |
+|------|----------|--------------|
+| **DoR** | spec.md exists, no `[NEEDS CLARIFICATION]`, 3+ BDD scenarios | domain-analyst |
+| **ArchReview** | plan.md exists, ADRs documented, layer boundaries defined | solution-architect |
+| **TaskReady** | BDD reference, `[test-first]` tag, single layer, ≤4h estimate | tech-lead |
+| **BDDCoverage** | Every BDD scenario has test, exact titles match | qa-engineer |
+| **DoD** | All gates pass, all tasks [x], compile + lint + typecheck PASS | Final delivery |
+
+---
 
 ## Configuration
 
-Add to `.specify/memory/constitution.md`:
+### Project Structure
 
-```yaml
-checkpointing:
-  remind_after_gates: true
-  remind_before_destructive: true
-
-notifications:
-  enabled: true
-  events: [gate_pass, workflow_complete]
-
-memory_sync:
-  enabled: true
-  sync_patterns: true
-
-tool_priority:
-  bug_fix:
-    primary: mcp__serena__find_symbol
+```
+.specify/
+├── memory/
+│   └── constitution.md      # Project conventions (auto-generated)
+├── specs/
+│   └── 001-feature-name/
+│       ├── spec.md          # Requirements + BDD scenarios
+│       ├── plan.md          # Architecture + ADRs
+│       ├── tasks.md         # Implementation checklist
+│       ├── analysis.md      # Plan mode output (optional)
+│       └── team-messages.log
 ```
 
-## MCP Servers (Optional)
-
-| Server | Use | Required |
-|--------|-----|----------|
-| `serena` | Symbol-aware code ops | No (falls back to built-in) |
-| `memory` | Knowledge graph for patterns | No |
-| `context7` | Library docs | No |
-| `sequentialthinking` | Semantic analysis | No |
-
-## Skills Architecture (v7.0)
-
-dev-stack is built on modular skills:
-
-| Skill | Purpose |
-|-------|---------|
-| `orchestration` | MODE routing, team dispatch, output formats |
-| `lib-router` | AI-optimized tool mapping and fallback chains |
-| `lib-workflow` | Workflow classification, dependency graphs |
-| `lib-domain` | DDD/BDD spec authoring |
-| `lib-tdd` | Test-driven development cycle |
-| `lib-intelligence` | Memory sync, drift detection, impact analysis |
-
-## Integration with CLAUDE.md
-
-dev-stack respects your project's `CLAUDE.md` file. For best results, add:
+### Constitution Template
 
 ```markdown
-# CLAUDE.md
-- Use /dev-stack for all feature work
-- Run /dev-stack:check before commits
-- Check /dev-stack:status for active work
+# Project Constitution
+
+## Principles
+- Use TypeScript for all new code
+- Follow TDD for all features
+- All code must pass lint, typecheck, and tests
+
+## Architecture
+- Layered architecture (domain, application, infrastructure)
+- Dependency injection for services
+- Repository pattern for data access
+
+## Learnings
+- [Updated from retrospectives]
 ```
 
 ---
 
-**That's it.** Just use `/dev-stack {task}` and let it handle the rest.
+## MCP Integration
+
+### Required MCP Servers
+
+| Server | Purpose | Required |
+|--------|---------|----------|
+| `serena` | Symbol-aware code operations | No (falls back to built-in) |
+| `memory` | Knowledge graph for patterns | No |
+| `sequentialthinking` | Semantic analysis | No |
+
+### Optional MCP Servers
+
+| Server | Purpose |
+|--------|---------|
+| `context7` | Library documentation lookup |
+| `fetch` | Web content fetching |
+| `filesystem` | Advanced file operations |
+| `ide` | IDE integration |
+
+---
+
+## Version History
+
+| Version | Date | Key Changes |
+|---------|------|-------------|
+| 8.0.0 | 2026-03-01 | 11 unified commands (down from 21) |
+| 7.7.0 | 2026-03-01 | Interactive menu |
+| 7.0.0 | 2026-03-01 | Major rewrite, 11 agents |
+| 6.x | 2026-02-28 | Pre-v7 architecture |
+| 1.0.0 | 2026-02-20 | Initial version |
+
+---
+
+*Last updated: 2026-03-01*
+*Plugin version: 8.0.0*

@@ -1,48 +1,53 @@
 ---
-description: (A):Smart entry point — auto-routes to best workflow (bug/feature/refactor/security/hotfix)
+description: 🚀 Smart entry — auto-routes to best workflow (bug/feature/refactor/security/hotfix)
 ---
 
-IF INPUT IS EMPTY, SHOW THIS MENU FIRST:
+# dev-stack:agents
+
+You are the **Master Orchestrator** for dev-stack.
+
+## Behavior
+
+IF INPUT IS EMPTY, SHOW THIS MENU:
 
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║                    🚀 dev-stack v7.7.0                        ║
+║                    🚀 dev-stack v8.0.0                        ║
 ║              Enterprise Dev Orchestration                     ║
 ╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
 ║  ⚡ /dev-stack:agents <task>                                  ║
 ║     Smart entry — describe what you want, we route it         ║
+║                                                               ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  📦 CORE WORKFLOWS                                            ║
+║  📦 CORE WORKFLOWS (6)                                        ║
 ║  ─────────────────────────────────────────────────────────── ║
-║  :core-feature    New functionality (full DDD/BDD)            ║
-║  :core-bug        Bug fixes (quick process)                   ║
-║  :core-hotfix     Emergency fixes (no gates)                  ║
-║  :core-refactor   Code improvement (preserves behavior)       ║
-║  :core-security   Security patches (full OWASP)               ║
-║  :core-plan       Read-only analysis                          ║
+║  :bug         Fix bugs (auto-routes team)                     ║
+║  :feature     New features (full DDD/BDD)                     ║
+║  :hotfix      Emergency fixes (bypasses gates)                ║
+║  :plan        Read-only analysis                              ║
+║  :refactor    Code improvement (preserves behavior)           ║
+║  :security    Security patches (full OWASP)                   ║
 ║                                                               ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  🔀 GIT           │  📊 QUALITY      │  📁 INFO               ║
-║  ───────────────  │  ──────────────  │  ──────────────        ║
-║  :git-impact      │  :quality-audit  │  :info-adr             ║
-║  :git-parallel    │  :quality-check  │  :info-help            ║
-║  :git-pr          │  :quality-drift  │  :info-status          ║
-║                   │  :quality-review │  :info-tools           ║
+║  🔀 GIT          │  📊 QUALITY     │  📁 INFO                ║
+║  ──────────────  │  ─────────────  │  ─────────────          ║
+║  :git            │  :quality       │  :info                  ║
+║  (impact/parallel│  (audit/check/  │  (adr/help/             ║
+║   /pr)           │   drift/review) │   status/tools)         ║
 ║                                                               ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  💾 SESSION                                                    ║
 ║  ─────────────────────────────────────────────────────────── ║
-║  :session-resume    Resume pending feature                    ║
-║  :session-retro     Run retrospective                         ║
-║  :session-snapshot  Save state before switching               ║
+║  :session (resume/retro/snapshot)                             ║
 ║                                                               ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  Quick Start: /dev-stack:agents fix login bug                 ║
-║  Full Help:   /dev-stack:info-help                            ║
+║  Commands:    11 (down from 21)                               ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
@@ -51,36 +56,80 @@ THEN ASK USER: "What would you like to work on?"
 
 ---
 
-OTHERWISE (INPUT PROVIDED), SPAWN ORCHESTRATOR:
+OTHERWISE (INPUT PROVIDED), EXECUTE ORCHESTRATION:
+
+## 1. CLASSIFY Intent
 
 ```
-subagent_type: dev-stack:orchestrator
-prompt: |
-  MODE: smart
-  INPUT: $ARGUMENTS
-
-  Execute the full workflow for this request.
+IF "bug" OR "fix" OR "error" OR "issue":
+  → /dev-stack:bug
+IF "feature" OR "add" OR "new" OR "implement":
+  → /dev-stack:feature
+IF "refactor" OR "improve" OR "clean" OR "restructure":
+  → /dev-stack:refactor
+IF "security" OR "vulnerability" OR "OWASP" OR "attack":
+  → /dev-stack:security
+IF "hotfix" OR "emergency" OR "production down":
+  → /dev-stack:hotfix
+IF "plan" OR "analyze" OR "assess":
+  → /dev-stack:plan
+IF "git" OR "push" OR "commit" OR "pr":
+  → /dev-stack:git
+IF "quality" OR "lint" OR "test":
+  → /dev-stack:quality
+IF "info" OR "status" OR "help":
+  → /dev-stack:info
+IF "session" OR "resume" OR "snapshot":
+  → /dev-stack:session
+OTHERWISE:
+  → Analyze and route to best match
 ```
 
----
+## 2. EXECUTE Workflow
 
-**Quick Examples:**
+Based on classification, execute the appropriate workflow directly:
+
+**IMPORTANT: Do NOT spawn subagents. Execute workflows directly.**
+
+| Workflow | Execution |
+|----------|-----------|
+| bug | Read `agents/senior-developer.md` + `agents/qa-engineer.md` instructions and execute |
+| feature | Read agent instructions and execute DDD/BDD workflow |
+| hotfix | Read `agents/senior-developer.md` and execute directly |
+| plan | Read `agents/domain-analyst.md` + `agents/solution-architect.md` and execute |
+| refactor | Read agent instructions and execute refactoring |
+| security | Read agent instructions and execute security workflow |
+
+## 3. TOOLS Available
+
+ALL tools are available:
+- **Skills**: Use `Skill` tool to invoke dev-stack skills
+- **MCP Servers**: serena, memory, context7, fetch, filesystem, ide, sequentialthinking, doc-forge, web_reader
+- **Built-in**: All Claude Code tools (Read, Write, Edit, Glob, Grep, Bash)
+- **Agent Instructions**: Read from `agents/*.md` files when needed
+
+## Examples
 
 ```
 /dev-stack:agents fix login bug
 /dev-stack:agents add user authentication
 /dev-stack:agents refactor database layer
 /dev-stack:agents review security
+/dev-stack:agents commit and push
 ```
 
----
+## Command Reference (11 total)
 
-## Workflow Constraints
-
-**ALWAYS follow these rules when selecting commands:**
-
-1. **ALWAYS** use `core-plan` before `core-feature` for complex features
-2. **ALWAYS** use `core-security` (not `core-bug`) for vulnerabilities
-3. **ALWAYS** run `quality-check` after implementation
-4. **ALWAYS** run `session-snapshot` before switching branches
-5. **ONLY** use `core-hotfix` for production emergencies
+```
+/dev-stack:agents    - Smart router (this command)
+/dev-stack:bug       - Bug fix workflow
+/dev-stack:feature   - New feature workflow
+/dev-stack:hotfix    - Emergency hotfix
+/dev-stack:plan      - Read-only analysis
+/dev-stack:refactor  - Code refactoring
+/dev-stack:security  - Security patches
+/dev-stack:git       - Git operations
+/dev-stack:info      - Information queries
+/dev-stack:quality   - Quality checks
+/dev-stack:session   - Session management
+```

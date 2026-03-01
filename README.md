@@ -1,38 +1,46 @@
 <div align="center">
 
+<img src="https://img.shields.io/badge/version-8.0.0-blue?style=for-the-badge" alt="Version">
+<img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License">
+<img src="https://img.shields.io/badge/Claude%20Code-Compatible-purple?style=for-the-badge" alt="Claude Code">
+
 # 🚀 dev-stack
 
-**Enterprise-Grade Development Orchestration for Claude Code**
+### **Enterprise-Grade Development Orchestration for Claude Code**
 
-*SDD • DDD • BDD • TDD • Intelligent Routing • Quality Gates*
+*One command. Full team. Zero overhead.*
 
-[![Version](https://img.shields.io/badge/version-7.7.0-blue.svg)](https://github.com/1827mk/dev-stack)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai/code)
+**SDD** • **DDD** • **BDD** • **TDD** • **Intelligent Routing** • **Quality Gates**
+
+<br>
+
+[🎯 Quick Start](#-quick-start) • [📖 Commands](#-commands) • [👥 Agents](#-agents) • [🔄 Workflows](#-workflows)
+
+<br>
 
 </div>
 
 ---
 
-## 📖 Overview
+## ✨ What is dev-stack?
 
-**dev-stack** is a comprehensive development orchestration plugin that transforms how you build software with Claude Code. It automatically assembles specialized AI agents, enforces quality gates, and routes your requests intelligently.
+**dev-stack** transforms how you build software with Claude Code. Just describe what you want — it automatically assembles specialized AI agents, enforces quality gates, and delivers production-ready code.
 
-### Why dev-stack?
+### Why teams love dev-stack
 
-| Without dev-stack | With dev-stack |
-|-------------------|----------------|
-| Manual agent coordination | Auto-assembled teams |
-| Inconsistent code quality | Enforced quality gates |
-| No process visibility | Real-time status tracking |
-| Ad-hoc workflows | Optimized workflow selection |
-| Manual test tracking | BDD scenario coverage |
+| 😫 Without dev-stack | 🚀 With dev-stack |
+|:--------------------:|:-----------------:|
+| Manual agent coordination | **Auto-assembled teams** |
+| Inconsistent code quality | **Enforced quality gates** |
+| No process visibility | **Real-time status tracking** |
+| Ad-hoc workflows | **Optimized workflow selection** |
+| Manual test tracking | **BDD scenario coverage** |
 
 ---
 
 ## ⚡ Quick Start
 
-### Installation
+### Install
 
 ```bash
 # In Claude Code CLI
@@ -42,376 +50,210 @@
 ### Your First Feature
 
 ```bash
-# Just describe what you want - dev-stack handles the rest
 /dev-stack:agents add user authentication with JWT tokens
 ```
 
-That's it! dev-stack will:
-1. 🔍 Classify your intent (feature/bug/refactor/security)
-2. 👥 Assemble the right team of agents
-3. 📋 Generate DDD specs with BDD scenarios
-4. ✅ Run quality gates automatically
-5. 🚀 Deliver production-ready code
+**That's it!** dev-stack will:
+1. 🔍 **Classify** your intent (feature/bug/refactor/security)
+2. 👥 **Assemble** the right team of AI agents
+3. 📋 **Generate** DDD specs with BDD scenarios
+4. ✅ **Run** quality gates automatically
+5. 🚀 **Deliver** production-ready code
 
 ---
 
-## 🎯 Commands Reference
+## 🎯 Commands
 
-### Smart Entry Point
+### One Smart Entry Point
 
 ```bash
-/dev-stack:agents <your request>    # Auto-routes to best workflow
+/dev-stack:agents <describe what you want>
 ```
 
-### All Commands (21 total)
+### 11 Unified Commands
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  agents        │ Smart Entry - auto-routes to best workflow │
-├─────────────────────────────────────────────────────────────┤
-│  CORE          │  GIT           │  INFO         │  QUALITY  │
-│  ──────        │  ───────       │  ──────       │  ─────────│
-│  :core-bug     │  :git-impact   │  :info-adr    │  :quality-audit   │
-│  :core-feature │  :git-parallel │  :info-help   │  :quality-check   │
-│  :core-hotfix  │  :git-pr       │  :info-status │  :quality-drift   │
-│  :core-plan    │                │  :info-tools  │  :quality-review  │
-│  :core-refactor│                │               │              │
-│  :core-security│                │               │              │
-├─────────────────────────────────────────────────────────────┤
-│  SESSION       │                                             │
-│  ──────────      │                                             │
-│  :session-resume│                                             │
-│  :session-retro │                                             │
-│  :session-snapshot│                                           │
-└─────────────────────────────────────────────────────────────┘
+╔═══════════════════════════════════════════════════════════════╗
+║                    🚀 dev-stack v8.0.0                        ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  📦 CORE WORKFLOWS (6)                                        ║
+║  ─────────────────────────────────────────────────────────── ║
+║  /dev-stack:bug        🐛 Fix bugs                           ║
+║  /dev-stack:feature    ✨ New features                       ║
+║  /dev-stack:hotfix     🔥 Emergency fixes                    ║
+║  /dev-stack:plan       📋 Read-only analysis                 ║
+║  /dev-stack:refactor   🔧 Code improvement                   ║
+║  /dev-stack:security   🔒 Security patches                   ║
+║                                                               ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  🔀 GIT          │  📊 QUALITY     │  📁 INFO                ║
+║  ──────────────  │  ─────────────  │  ─────────────          ║
+║  /dev-stack:git  │ /dev-stack:quality │ /dev-stack:info      ║
+║                                                               ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  💾 SESSION: /dev-stack:session (resume/retro/snapshot)      ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
 ```
 
-### Core Workflows
+### Examples
 
-| Command | Use Case | Example |
-|---------|----------|---------|
-| `/dev-stack:core-bug` | Bug fixes | `/dev-stack:core-bug fix null pointer in auth` |
-| `/dev-stack:core-feature` | New functionality | `/dev-stack:core-feature add payment processing` |
-| `/dev-stack:core-hotfix` | Emergency fixes | `/dev-stack:core-hotfix patch critical XSS` |
-| `/dev-stack:core-plan` | Analysis only | `/dev-stack:core-plan analyze database schema` |
-| `/dev-stack:core-refactor` | Code improvement | `/dev-stack:core-refactor simplify auth module` |
-| `/dev-stack:core-security` | Security patches | `/dev-stack:core-security fix SQL injection` |
+```bash
+# Fix a bug
+/dev-stack:agents fix null pointer exception in login
 
-### Git Commands
+# Add a feature
+/dev-stack:agents add shopping cart with Stripe
 
-| Command | Purpose |
-|---------|---------|
-| `/dev-stack:git-impact` | Pre-change risk analysis |
-| `/dev-stack:git-parallel` | Run features in parallel worktrees |
-| `/dev-stack:git-pr` | Generate PR description |
+# Emergency fix
+/dev-stack:agents production is down!
 
-### Info Commands
+# Security patch
+/dev-stack:agents fix SQL injection in search
 
-| Command | Purpose |
-|---------|---------|
-| `/dev-stack:info-adr` | Query architecture decisions |
-| `/dev-stack:info-help` | Full command reference |
-| `/dev-stack:info-status` | Show active features and progress |
-| `/dev-stack:info-tools` | Show available tools catalog |
-
-### Quality Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/dev-stack:quality-audit` | Security + code review in parallel |
-| `/dev-stack:quality-check` | Run lint + typecheck + build |
-| `/dev-stack:quality-drift` | Detect spec vs code gaps |
-| `/dev-stack:quality-review` | Code review on changed files |
-
-### Session Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/dev-stack:session-resume` | Resume pending feature |
-| `/dev-stack:session-retro` | Run retrospective |
-| `/dev-stack:session-snapshot` | Save session state |
+# Analyze before coding
+/dev-stack:agents assess database migration impact
+```
 
 ---
 
-## 👥 Agent Team
+## 👥 Agents
 
-dev-stack assembles specialized agents based on your workflow:
+dev-stack assembles **11 specialized AI agents** based on your workflow:
 
-### Core Team
-
-| Agent | Role | When Used |
-|-------|------|-----------|
-| **orchestrator** | Routes requests, assembles teams | Every request |
-| **domain-analyst** | Creates DDD specs with BDD scenarios | Features, bugs, architecture |
-| **solution-architect** | Designs architecture, writes ADRs | Features, refactoring, architecture |
-| **tech-lead** | Decomposes plan into atomic tasks | Features, architecture |
-| **senior-developer** | Implements with TDD | All code changes |
-| **quality-gatekeeper** | Reviews code + security | All code changes |
-| **qa-engineer** | Validates test coverage | Features, bugs |
-
-### Extended Team
-
-| Agent | Role | When Used |
-|-------|------|-----------|
-| **devops-engineer** | Deployment config, CI/CD | Features, architecture |
-| **team-coordinator** | Team communication | Complex workflows |
-| **performance-engineer** | Performance analysis | On-demand |
-| **documentation-writer** | Generates docs | After delivery |
+| Agent | Role | Superpower |
+|:------|:-----|:-----------|
+| 🎯 **orchestrator** | Central router | Assembles the right team |
+| 📝 **domain-analyst** | DDD/BDD specs | Translates requirements to scenarios |
+| 🏗️ **solution-architect** | Architecture | Designs systems, writes ADRs |
+| 📋 **tech-lead** | Task decomposition | Breaks work into atomic pieces |
+| 💻 **senior-developer** | TDD implementation | Writes tests first, always |
+| 🛡️ **quality-gatekeeper** | Code + security review | Catches issues before you |
+| ✅ **qa-engineer** | Test validation | Ensures 100% BDD coverage |
+| 🚀 **devops-engineer** | Deployment | CI/CD, containers, infra |
+| 📊 **performance-engineer** | Optimization | Finds bottlenecks |
+| 📖 **documentation-writer** | Docs | Keeps everything documented |
+| 🤝 **team-coordinator** | Communication | Coordinates the team |
 
 ---
 
 ## 🔄 Workflows
 
-### Workflow Selection
+### Intelligent Routing
 
 dev-stack automatically selects the right workflow:
 
-| Intent Detected | Workflow | Team | Quality Gates |
-|-----------------|----------|------|---------------|
-| "add", "create", "implement" | `new_feature` | Full team | All 5 gates |
-| "fix", "bug", "issue" | `bug_fix` | domain → dev → gate → qa | DoR, DoD |
-| "urgent", "critical", "hotfix" | `hotfix` | dev → gate | None |
-| "refactor", "improve", "clean" | `refactor` | architect → dev → gate | ArchReview, DoD |
-| "security", "vulnerability", "CVE" | `security_patch` | dev → gate (full) → qa | DoR, DoD |
-| "analyze", "design", "architecture" | `architecture` | Full team | All gates |
-| "research", "spike", "POC" | `spike` | domain-analyst | None |
+| You Say | Workflow | What Happens |
+|:--------|:---------|:-------------|
+| "add", "create", "implement" | **Feature** | Full DDD/BDD team |
+| "fix", "bug", "error" | **Bug Fix** | Fast TDD cycle |
+| "urgent", "critical", "production down" | **Hotfix** | Emergency bypass |
+| "refactor", "improve", "clean" | **Refactor** | Safe transformation |
+| "security", "vulnerability", "CVE" | **Security** | Full OWASP scan |
+| "analyze", "assess", "plan" | **Plan** | Read-only analysis |
 
-### Workflow Diagram
+### Workflow Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        /dev-stack <request>                      │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │   orchestrator  │
-                    │   Classifies    │
-                    │   & Routes      │
-                    └────────┬────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        ▼                     ▼                     ▼
-   ┌─────────┐          ┌─────────┐          ┌─────────┐
-   │ feature │          │   bug   │          │ hotfix  │
-   │ workflow│          │workflow │          │workflow │
-   └────┬────┘          └────┬────┘          └────┬────┘
-        │                    │                    │
-        ▼                    ▼                    ▼
-   ┌─────────┐          ┌─────────┐          ┌─────────┐
-   │ domain  │          │ domain  │          │ senior  │
-   │ analyst │          │ analyst │          │  dev    │
-   └────┬────┘          └────┬────┘          └────┬────┘
-        │                    │                    │
-        ▼                    ▼                    ▼
-   ┌─────────┐          ┌─────────┐          ┌─────────┐
- │solution │          │ senior  │          │ quality │
-   │architect│          │  dev    │          │  gate   │
-   └────┬────┘          └────┬────┘          └─────────┘
-        │                    │
-        ▼                    ▼
-   ┌─────────┐          ┌─────────┐
-   │  tech   │          │ quality │
-   │  lead   │          │  gate   │
-   └────┬────┘          └────┬────┘
-        │                    │
-        ▼                    ▼
-   ┌─────────┐          ┌─────────┐
-   │ senior  │          │   qa    │
-   │  dev    │          │ engineer│
-   └────┬────┘          └─────────┘
-        │
-        ▼
-   ┌─────────┐
-   │ quality │
-   │  gate   │
-   └────┬────┘
-        │
-        ▼
-   ┌─────────┐
-   │   qa    │
-   │ engineer│
-   └────┬────┘
-        │
-        ▼
-   ┌─────────┐
-   │ devops  │
-   │ engineer│
-   └─────────┘
+Your Request
+     │
+     ▼
+┌─────────────────┐
+│  🎯 orchestrator │  ← Classifies intent
+└────────┬────────┘
+         │
+    ┌────┴────┬─────────┬─────────┐
+    ▼         ▼         ▼         ▼
+┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐
+│Feature│ │  Bug  │ │Hotfix │ │Security│
+└───┬───┘ └───┬───┘ └───┬───┘ └───┬───┘
+    │         │         │         │
+    ▼         ▼         ▼         ▼
+Full Team   Fast     Emergency  OWASP
++ Gates    TDD       Bypass     Scan
 ```
 
 ---
 
 ## 🛡️ Quality Gates
 
-dev-stack enforces quality at every stage:
-
-### Gate Flow
+Every workflow enforces quality at every stage:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                    QUALITY GATE PIPELINE                      │
+│                    🎯 QUALITY GATE PIPELINE                   │
 ├──────────────────────────────────────────────────────────────┤
 │                                                              │
-│  ┌─────────┐    ┌──────────┐    ┌───────────┐    ┌────────┐ │
-│  │   DoR   │───▶│ArchReview│───▶│ TaskReady │───▶│  BDD   │ │
-│  │         │    │          │    │           │    │Coverage│ │
-│  └─────────┘    └──────────┘    └───────────┘    └───┬────┘ │
-│       │              │               │                │      │
-│       ▼              ▼               ▼                ▼      │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                    DoD (Definition of Done)              ││
-│  │  • All gates pass                                        ││
-│  │  • All tasks [x] completed                               ││
-│  │  • compile + lint + typecheck PASS                       ││
-│  └─────────────────────────────────────────────────────────┘│
+│  ┌─────┐   ┌──────┐   ┌──────┐   ┌─────┐   ┌─────┐         │
+│  │ DoR │──▶│ Arch │──▶│ Task │──▶│ BDD │──▶│ DoD │         │
+│  └─────┘   └──────┘   └──────┘   └─────┘   └─────┘         │
+│                                                              │
+│  ✓ Spec     ✓ Plan     ✓ Tasks    ✓ Tests    ✓ All        │
+│    exists   + ADRs     + BDD        pass       complete    │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
 ### Gate Criteria
 
-| Gate | Checks | Blocks |
-|------|--------|--------|
-| **DoR** | spec.md exists, no `[NEEDS CLARIFICATION]`, 3+ BDD scenarios | domain-analyst |
-| **ArchReview** | plan.md exists, ADRs documented, layer boundaries defined | solution-architect |
-| **TaskReady** | BDD reference, `[test-first]` tag, single layer, ≤4h estimate | tech-lead |
-| **BDDCoverage** | Every BDD scenario has test, exact titles match | qa-engineer |
-| **DoD** | All gates pass, all tasks complete, build passes | Final delivery |
-
----
-
-## 📁 Project Structure
-
-```
-dev-stack-marketplace/
-├── .claude-plugin/
-│   └── marketplace.json          # Marketplace metadata
-│
-├── plugins/dev-stack/
-│   ├── .claude-plugin/
-│   │   └── plugin.json           # Plugin manifest
-│   │
-│   ├── README.md                 # Plugin documentation
-│   │
-│   ├── agents/                   # 11 Specialized Agents
-│   │   ├── orchestrator.md
-│   │   ├── domain-analyst.md
-│   │   ├── solution-architect.md
-│   │   ├── tech-lead.md
-│   │   ├── senior-developer.md
-│   │   ├── quality-gatekeeper.md
-│   │   ├── qa-engineer.md
-│   │   ├── devops-engineer.md
-│   │   ├── team-coordinator.md
-│   │   ├── performance-engineer.md
-│   │   └── documentation-writer.md
-│   │
-│   ├── commands/                 # 22 Slash Commands
-│   │   ├── dev-stack.md          # Smart entry point
-│   │   ├── feature.md            # Feature workflow
-│   │   ├── bug.md                # Bug fix workflow
-│   │   ├── hotfix.md             # Hotfix workflow
-│   │   ├── refactor.md           # Refactor workflow
-│   │   ├── security.md           # Security workflow
-│   │   ├── plan.md               # Analysis mode
-│   │   └── ...                   # More commands
-│   │
-│   ├── hooks/                    # Event Hooks
-│   │   ├── hooks.json            # Hook configuration
-│   │   ├── prompts/              # Prompt-based hooks
-│   │   │   ├── checkpoint-reminder.md
-│   │   │   └── verify-agent-done.md
-│   │   └── scripts/              # Shell script hooks
-│   │       ├── session-start.sh
-│   │       ├── auto-router.sh
-│   │       ├── pre-tool-guard.sh
-│   │       ├── notify.sh
-│   │       └── status-line.sh
-│   │
-│   └── skills/                   # Internal Libraries
-│       ├── orchestration/        # MODE routing, team dispatch
-│       ├── lib-router/           # Tool mapping
-│       ├── lib-workflow/         # Workflow classification
-│       ├── lib-domain/           # DDD/BDD patterns
-│       ├── lib-tdd/              # TDD cycle
-│       └── lib-intelligence/     # Snapshot, drift, impact
-│
-└── docs/
-    └── plans/                    # Design documents
-```
-
----
-
-## 🔧 Configuration
-
-### Initialize Project
-
-dev-stack works best with a `.specify/` directory:
-
-```bash
-# Creates constitution.md with your project principles
-/dev-stack:session-retro
-```
-
-### Constitution
-
-Your project's living document that captures:
-
-- **Principles** - Coding standards, patterns
-- **Architecture** - Key decisions, ADRs
-- **Learnings** - From retrospectives
+| Gate | Checks | Why It Matters |
+|:-----|:-------|:---------------|
+| **DoR** | Spec exists, 3+ BDD scenarios | Clear requirements |
+| **ArchReview** | Plan + ADRs documented | Thoughtful design |
+| **TaskReady** | Tasks <4h, test-first tagged | Manageable work |
+| **BDDCoverage** | Every scenario has test | No missing tests |
+| **DoD** | All gates pass, build green | Production ready |
 
 ---
 
 ## 📊 Status Line
 
-dev-stack updates your status line with real-time progress:
+dev-stack keeps you informed with real-time progress:
 
 ```
-🔧 dev-stack auto-route
-
-Task: new_feature | Domain: auth
+🔧 dev-stack | Task: new_feature | Domain: auth
 Team: domain-analyst → solution-architect → tech-lead
 Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 ```
 
 ---
 
-## 🎓 Examples
+## 🎓 Real Examples
 
 ### Feature Development
 
 ```bash
-# Start a new feature
-/dev-stack:core-feature add shopping cart with Stripe integration
+# Start
+/dev-stack:agents add password reset with email verification
 
 # Check progress
-/dev-stack:info-status
+/dev-stack:info status
 
-# After implementation, generate PR
-/dev-stack:git-pr
+# Generate PR when done
+/dev-stack:git pr
 ```
 
 ### Bug Fix
 
 ```bash
-# Quick bug fix
-/dev-stack:core-bug fix cart total calculation error
+# Quick fix
+/dev-stack:agents fix cart total rounding error
 
 # Review the fix
-/dev-stack:quality-review
+/dev-stack:quality review
 ```
 
 ### Security Patch
 
 ```bash
-# Security vulnerability
-/dev-stack:core-security fix XSS in product search
+# Fix vulnerability
+/dev-stack:agents fix XSS in product search
 
 # Full security audit
-/dev-stack:quality-audit
+/dev-stack:quality audit
 ```
 
 ---
@@ -419,100 +261,52 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 ## 📋 Requirements
 
 | Requirement | Version |
-|-------------|---------|
+|:------------|:--------|
 | Claude Code CLI | Latest |
 | Git | 2.0+ |
 | Bash | 4.0+ |
 
 ---
 
-## 🗓️ Changelog
+## 🗓️ What's New
+
+### v8.0.0 (2026-03-01)
+
+**🎉 Unified Smart Commands**
+
+- **11 commands** (down from 21) — simpler, smarter
+- Each command is a **smart router** that auto-detects intent
+- **Unified operations**: git, info, quality, session all in one
+- **Full tool access**: All commands can use all agents, skills, MCP servers
+
+<details>
+<summary>📜 View Full Changelog</summary>
 
 ### v7.7.0 (2026-03-01)
-
-**Interactive Grouped Menu**
-
-- 📋 **Beautiful ASCII menu**: `/dev-stack:agents` now shows grouped command menu when called without arguments
-- 🎯 **Smart routing**: Menu displayed first, then accepts user input and routes to workflow
-- 📊 **Organized layout**: Commands grouped by category (Core, Git, Info, Quality, Session)
-- 💡 **Interactive UX**: Asks "What would you like to work on?" after showing menu
-
-### v7.6.0 (2026-03-01)
-
-**Visual Category Prefixes**
-
-- 🏷️ **Category badges in descriptions**: `(C):` Core, `(G):` Git, `(I):` Info, `(Q):` Quality, `(S):` Session
-- 👁️ **Instant visual grouping**: See command category at a glance in picker
-- 📊 **Consistent naming**: All 21 commands now have standardized prefixes
-
-### v7.5.0 (2026-03-01)
-
-**Simplified Command Descriptions**
-
-- 📝 **Shorter descriptions**: All commands now have concise, readable descriptions
-- 🎯 **Better picker UX**: No more cluttered multi-line text in command picker
-- ✨ **Commands sorted correctly**: agents → core-* → git-* → info-* → quality-* → session-*
-
-### v7.4.0 (2026-03-01)
-
-**Enhanced Command Context & Workflow Constraints**
-
-- 📝 **Rich descriptions**: All commands now include WORKFLOW, PHASE, USE WHEN context
-- 🎯 **Workflow constraints**: Clear rules for when to use each command
-- 📊 **Decision matrix**: Quick reference for command selection
-- 🤖 **AI-optimized**: Better context helps AI choose the right command
-
-### v7.3.0 (2026-03-01)
-
-**Category-Prefixed Commands**
-
-- 🔧 **Core workflow prefix**: `:bug` → `:core-bug`, `:feature` → `:core-feature`, etc.
-- 📊 **Alphabetical grouping**: Commands now sort by category in picker
-- 📚 Updated all documentation to reflect new naming
-
-### v7.2.0 (2026-03-01)
-
-**Smart Entry & Command Organization**
-
-- 🚀 **Renamed smart entry**: `/dev-stack:dev-stack` → `/dev-stack:agents`
-- 📊 **Commands sorted by frequency** (most used first)
-- 📚 Reorganized help documentation with priority ordering
-
-### v7.1.0 (2026-03-01)
-
-**Command Restructure**
-
-- 🔧 **Category-prefixed commands** for better organization
-  - Info: `info-status`, `info-tools`, `info-help`, `info-adr`
-  - Quality: `quality-check`, `quality-review`, `quality-audit`, `quality-drift`
-  - Session: `session-resume`, `session-snapshot`, `session-retro`
-  - Git: `git-pr`, `git-impact`, `git-parallel`
-- 🗑️ Removed `/dev-stack:dev` (use `/dev-stack:dev-stack` instead)
+- Interactive ASCII menu
+- Smart routing with user input
 
 ### v7.0.0 (2026-03-01)
+- 11 specialized agents
+- Unified quality-gatekeeper
+- 7 workflow types
+- 5 quality gates
+- Intelligent auto-routing
+- Parallel agent dispatch
+- Real-time status line
+- Desktop notifications
 
-**Major Rewrite**
-
-- ✨ 11 specialized agents (was 9)
-- ✨ Unified quality-gatekeeper (replaces code-reviewer + security-auditor)
-- ✨ 7 workflow types with optimized team compositions
-- ✨ 5 quality gates (DoR, ArchReview, TaskReady, BDDCoverage, DoD)
-- ✨ Intelligent auto-routing with confidence thresholds
-- ✨ Parallel agent dispatch for faster execution
-- ✨ Real-time status line updates
-- ✨ Desktop notifications for gate events
+</details>
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
+Contributions welcome! Feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
@@ -520,6 +314,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ using Claude Code (Opus 4.6)**
 
-[Getting Started](#-quick-start) • [Commands](#-commands-reference) • [Agents](#-agent-team) • [Workflows](#-workflows)
+<br>
+
+[Get Started](#-quick-start) • [Commands](#-commands) • [Agents](#-agents) • [Workflows](#-workflows)
 
 </div>
