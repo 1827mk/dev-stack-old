@@ -60,10 +60,10 @@ That's it! dev-stack will:
 ### Smart Entry Point
 
 ```bash
-/dev-stack <your request>    # Auto-routes to best workflow
+/dev-stack:dev-stack <your request>    # Auto-routes to best workflow
 ```
 
-### Direct Workflow Commands (Faster)
+### Core Workflows (7 commands)
 
 | Command | Use Case | Example |
 |---------|----------|---------|
@@ -74,24 +74,39 @@ That's it! dev-stack will:
 | `/dev-stack:security` | Security patches | `/dev-stack:security fix SQL injection` |
 | `/dev-stack:plan` | Analysis only | `/dev-stack:plan analyze database schema` |
 
-### Utility Commands
+### Info Commands (4 commands)
 
 | Command | Purpose |
 |---------|---------|
-| `/dev-stack:status` | Show active features and progress |
-| `/dev-stack:resume [id]` | Resume pending feature |
-| `/dev-stack:review` | Code review on changed files |
-| `/dev-stack:audit` | Security + code review in parallel |
-| `/dev-stack:check` | Run lint + typecheck + build |
-| `/dev-stack:pr` | Generate PR description |
-| `/dev-stack:drift` | Detect spec vs code gaps |
-| `/dev-stack:impact` | Pre-change risk analysis |
-| `/dev-stack:adr` | Query architecture decisions |
-| `/dev-stack:retro` | Run retrospective |
-| `/dev-stack:snapshot` | Save session state |
-| `/dev-stack:parallel` | Run features in parallel worktrees |
-| `/dev-stack:tools` | Show available tools catalog |
-| `/dev-stack:help` | Full command reference |
+| `/dev-stack:info-status` | Show active features and progress |
+| `/dev-stack:info-tools` | Show available tools catalog |
+| `/dev-stack:info-adr` | Query architecture decisions |
+| `/dev-stack:info-help` | Full command reference |
+
+### Quality Commands (4 commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/dev-stack:quality-check` | Run lint + typecheck + build |
+| `/dev-stack:quality-review` | Code review on changed files |
+| `/dev-stack:quality-audit` | Security + code review in parallel |
+| `/dev-stack:quality-drift` | Detect spec vs code gaps |
+
+### Session Commands (3 commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/dev-stack:session-resume` | Resume pending feature |
+| `/dev-stack:session-snapshot` | Save session state |
+| `/dev-stack:session-retro` | Run retrospective |
+
+### Git Commands (3 commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/dev-stack:git-pr` | Generate PR description |
+| `/dev-stack:git-impact` | Pre-change risk analysis |
+| `/dev-stack:git-parallel` | Run features in parallel worktrees |
 
 ---
 
@@ -314,7 +329,7 @@ dev-stack works best with a `.specify/` directory:
 
 ```bash
 # Creates constitution.md with your project principles
-/dev-stack:retro
+/dev-stack:session-retro
 ```
 
 ### Constitution
@@ -350,10 +365,10 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 /dev-stack:feature add shopping cart with Stripe integration
 
 # Check progress
-/dev-stack:status
+/dev-stack:info-status
 
 # After implementation, generate PR
-/dev-stack:pr
+/dev-stack:git-pr
 ```
 
 ### Bug Fix
@@ -363,7 +378,7 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 /dev-stack:bug fix cart total calculation error
 
 # Review the fix
-/dev-stack:review
+/dev-stack:quality-review
 ```
 
 ### Security Patch
@@ -373,7 +388,7 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 /dev-stack:security fix XSS in product search
 
 # Full security audit
-/dev-stack:audit
+/dev-stack:quality-audit
 ```
 
 ---
@@ -402,6 +417,7 @@ Gate: DoR ✓ | ArchReview ✓ | TaskReady ⏳
 - ✨ Parallel agent dispatch for faster execution
 - ✨ Real-time status line updates
 - ✨ Desktop notifications for gate events
+- ✨ **Category-prefixed commands** for better organization (21 commands in 5 categories)
 
 ---
 
