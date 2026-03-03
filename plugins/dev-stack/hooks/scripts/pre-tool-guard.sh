@@ -28,6 +28,37 @@ if [ "$TOOL" = "Bash" ]; then
     jq -n '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:"Destructive SQL detected. Confirm?"}}'
     exit 0
   fi
+
+  # ── Git write operation guards (require confirmation) ────────────────
+  # Block git commit (require confirmation)
+  if echo "$CMD" | grep -qE 'git\s+commit'; then
+    jq -n '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:"⚠️ git commit requires user confirmation. Proceed?"}}'
+    exit 0
+  fi
+
+  # Block git push (require confirmation)
+  if echo "$CMD" | grep -qE 'git\s+push'; then
+    jq -n '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:"⚠️ git push requires user confirmation. Proceed?"}}'
+    exit 0
+  fi
+
+  # Block git reset --hard (require confirmation)
+  if echo "$CMD" | grep -qE 'git\s+reset\s+--hard'; then
+    jq -n '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:"⚠️ git reset --hard will discard all uncommitted changes. Confirm?"}}'
+    exit 0
+  fi
+
+  # Block git push --force (require confirmation)
+  if echo "$CMD" | grep -qE 'git\s+push.*--force|git\s+push.*-f'; then
+    jq -n '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:"🚨 git push --force can overwrite remote history. Confirm?"}}'
+    exit 0
+  fi
+
+  # Block git amend on published branches (require confirmation)
+  if echo "$CMD" | grep -qE 'git\s+commit\s+--amend'; then
+    jq -n '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:"⚠️ git commit --amend rewrites history. Confirm?"}}'
+    exit 0
+  fi
 fi
 
 # ── Write/Edit tool guards ──────────────────────────────────────────

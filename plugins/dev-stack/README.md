@@ -1,8 +1,8 @@
-# dev-stack v9.0.0 — Technical Blueprint
+# dev-stack v10.0.0 — Tool-Based Agent Architecture
 
 > **Internal Plugin Documentation** — Detailed architecture, agents, commands, and configuration for developers.
 >
-> **v9.0.0 Hybrid Architecture**: 145 tools, 12 agents, 12 commands, 7 skills, 6 hooks
+> **v10.0.0 Tool-Based Architecture**: 145+ tools, 12 specialized agents, 16 commands, 8 skills
 
 ---
 
@@ -13,9 +13,9 @@
 3. [Agents Reference](#agents-reference)
 4. [Commands Reference](#commands-reference)
 5. [Skills Reference](#skills-reference)
-6. [Hooks Reference](#hooks-reference)
-7. [Workflow Classification](#workflow-classification)
-8. [Quality Gates](#quality-gates)
+6. [Shared Memory Protocol](#shared-memory-protocol)
+7. [Tool Priority](#tool-priority)
+8. [Git Safety Policy](#git-safety-policy)
 9. [Configuration](#configuration)
 10. [MCP Integration](#mcp-integration)
 
@@ -23,101 +23,133 @@
 
 ## Architecture Overview
 
+### v10.0.0 Key Changes
+
+| Feature | v9.0.0 | v10.0.0 |
+|---------|--------|---------|
+| **Architecture** | Workflow-Based | Tool-Based |
+| **Agent Selection** | Fixed teams per workflow | **Capability-based dynamic assembly** |
+| **Execution** | Sequential | **Phase-based parallel (38-75% faster)** |
+| **Communication** | File-based | Shared memory (MCP) |
+| **Tool Priority** | None | MCP > Plugins > Skills > Built-in |
+| **Git Safety** | Basic | Full confirmation policy |
+
 ### Design Philosophy
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     dev-stack v9.0.0 Architecture               │
+│                    dev-stack v10.0.0 Architecture               │
+│              Capability-Based Parallel Orchestration            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   USER INPUT                                                    │
 │       │                                                         │
 │       ▼                                                         │
-│   ┌─────────────┐                                               │
-│   │   agents    │ ◀── Smart Router (orchestrator logic)        │
-│   │   .md       │     - Keyword classification                  │
-│   └──────┬──────┘     - Workflow selection                      │
-│          │            - Team assembly (12 agents)               │
-│          ▼                                                       │
-│   ┌─────────────┐                                               │
-│   │  commands/  │ ◀── Workflow Entry Points                     │
-│   │   *.md      │     - 12 unified commands (+ :init)           │
-│   └──────┬──────┘     - Auto-routing to skills                  │
-│          │                                                       │
-│          ▼                                                       │
-│   ┌─────────────┐                                               │
-│   │  skills/    │ ◀── Internal Libraries (7 skills)            │
-│   │   lib-*     │     - lib-router: 12 intents + fallbacks      │
-│   │   orch-*    │     - lib-workflow: Classification            │
-│   └──────┬──────┘     - lib-domain: DDD/BDD                     │
-│          │              - lib-tdd: Test cycle                    │
-│          │              - lib-testing: Test strategies (NEW)    │
-│          │              - lib-intelligence: Snapshot/Drift      │
-│          ▼                                                       │
-│   ┌─────────────┐                                               │
-│   │   hooks/    │ ◀── Event Handlers (6 hooks)                 │
-│   │   scripts/  │     - SessionStart: Initialize state          │
-│   │   prompts/  │     - UserPromptSubmit: Auto-routing          │
-│   └─────────────┘     - PreToolUse: Guard dangerous ops         │
-│                       - PostToolUse: Status line update         │
-│                       - Notification: Desktop alerts            │
-│                       - PreCommit: Quality gate (NEW)           │
+│   ┌─────────────────────────────────────────┐                   │
+│   │          ORCHESTRATOR (v10)              │                   │
+│   │  ┌─────────────────────────────────┐    │                   │
+│   │  │ 1. Capability Detection (NEW)    │    │                   │
+│   │  │ 2. Intent Classification         │    │                   │
+│   │  │ 3. Dependency-Level Team Assembly│    │                   │
+│   │  │ 4. Memory Coordinator            │    │                   │
+│   │  └─────────────────────────────────┘    │                   │
+│   └──────────────────┬──────────────────────┘                   │
+│                      │                                          │
+│                      ▼                                          │
+│   ┌─────────────────────────────────────────┐                   │
+│   │         SHARED MEMORY (MCP)              │                   │
+│   └──────────────────┬──────────────────────┘                   │
+│                      │                                          │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │     PARALLEL EXECUTION (by Dependency Level)              │  │
+│   │                                                           │  │
+│   │  Level 0 (Parallel):                                      │  │
+│   │  ┌──────────┐ ┌──────────┐ ┌──────────┐                  │  │
+│   │  │ code-    │ │ security-│ │ researcher│  ← Independent  │  │
+│   │  │ analyzer │ │ scanner  │ │          │                  │  │
+│   │  └──────────┘ └──────────┘ └──────────┘                  │  │
+│   │                      │                                   │  │
+│   │                      ▼ sync_to_memory()                   │  │
+│   │                                                           │  │
+│   │  Level 1 (With Level 0 Context):                         │  │
+│   │  ┌──────────────────────────────────────┐                │  │
+│   │  │         code-writer                  │  ← Needs analysis│ │
+│   │  └──────────────────────────────────────┘                │  │
+│   │                      │                                   │  │
+│   │                      ▼ sync_to_memory()                   │  │
+│   │                                                           │  │
+│   │  Level 2 (With Level 1 Context):                         │  │
+│   │  ┌──────────────────┐ ┌──────────────────┐              │  │
+│   │  │   qa-validator   │ │   doc-writer     │  ← Needs code│  │
+│   │  └──────────────────┘ └──────────────────┘              │  │
+│   └──────────────────────────────────────────────────────────┘  │
 │                                                                 │
-│   ┌─────────────┐                                               │
-│   │  MCP Tools  │ ◀── 145 Tools Integrated                     │
-│   │             │     - serena (26): Symbol-aware ops           │
-│   │             │     - memory (9): Knowledge graph             │
-│   │             │     - doc-forge (16): Document processing     │
-│   │             │     - filesystem (15): File operations        │
-│   │             │     - context7 (2): Library docs              │
-│   └─────────────┘                                               │
+│   ┌─────────────────────────────────────────┐                   │
+│   │         TOOL LAYER (145+ tools)          │                   │
+│   │  MCP: serena, memory, context7,          │                   │
+│   │       filesystem, doc-forge, web_reader  │                   │
+│   │  Priority: MCP > Plugins > Skills > Built│                   │
+│   └─────────────────────────────────────────┘                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Data Flow
+### Data Flow (Parallel Execution)
 
 ```
 User Request
     │
     ▼
 ┌───────────────────────────────────────────────────────┐
-│ 1. CLASSIFY (agents.md)                               │
+│ 1. ANALYZE REQUIREMENTS (capability-matcher.md)      │
+│    - Detect required capabilities                     │
+│    - Score confidence for each capability             │
+│    - Identify required agents                         │
+└───────────────────────┬───────────────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────────────┐
+│ 2. CLASSIFY INTENT (orchestrator)                     │
 │    - Keyword detection                                │
 │    - Sequential thinking for ambiguous cases          │
-│    - Confidence threshold check                       │
+│    - Combine with capability analysis                 │
 └───────────────────────┬───────────────────────────────┘
                         │
                         ▼
 ┌───────────────────────────────────────────────────────┐
-│ 2. SELECT WORKFLOW (lib-workflow)                     │
-│    - new_feature → Full DDD/BDD team                  │
-│    - bug_fix → domain → dev → gate → qa               │
-│    - hotfix → dev only                                │
-│    - refactor → architect → dev → gate                │
-│    - security_patch → dev → gate (full) → qa          │
+│ 3. MAP CAPABILITIES (capability-mapping.md)           │
+│    - Intent → Capabilities mapping                    │
+│    - Capability → Agent mapping with dependency levels│
 └───────────────────────┬───────────────────────────────┘
                         │
                         ▼
 ┌───────────────────────────────────────────────────────┐
-│ 3. ASSEMBLE TEAM (orchestration)                      │
-│    - Build dependency graph                           │
-│    - Identify parallel execution opportunities        │
-│    - Inject context bundle                            │
+│ 4. CREATE SHARED MEMORY (memory-protocol.md)          │
+│    - Create TaskContext entity                        │
+│    - Store original request                           │
+│    - Initialize observation log                       │
 └───────────────────────┬───────────────────────────────┘
                         │
                         ▼
 ┌───────────────────────────────────────────────────────┐
-│ 4. EXECUTE (agents + skills)                          │
-│    - Sequential agents with dependencies              │
-│    - Parallel agents where independent                │
-│    - Quality gates between phases                     │
+│ 5. PARALLEL EXECUTION (parallel-executor.md)          │
+│                                                       │
+│   Level 0: [code-analyzer, security-scanner]          │
+│            └─ Promise.all() → sync_to_memory()        │
+│                                                       │
+│   Level 1: [code-writer] (with Level 0 context)      │
+│            └─ sync_to_memory()                        │
+│                                                       │
+│   Level 2: [qa-validator] (with Level 1 context)     │
+│            └─ sync_to_memory()                        │
 └───────────────────────┬───────────────────────────────┘
                         │
                         ▼
 ┌───────────────────────────────────────────────────────┐
-│ 5. VALIDATE (quality-gatekeeper)                      │
-│    - DoR → ArchReview → TaskReady → BDDCoverage → DoD │
+│ 6. AGGREGATE RESULTS (memory coordinator)             │
+│    - Read all agent findings from memory              │
+│    - Combine into final output                        │
+│    - Update task status                               │
 └───────────────────────────────────────────────────────┘
 ```
 
@@ -129,294 +161,242 @@ User Request
 plugins/dev-stack/
 │
 ├── .claude-plugin/
-│   └── plugin.json              # Plugin manifest (version, description)
+│   └── plugin.json              # Plugin manifest (v10.0.0)
 │
 ├── README.md                    # This file (technical blueprint)
 │
-├── agents/                      # 12 Agent Instructions
-│   ├── orchestrator.md          # Central router
-│   ├── domain-analyst.md        # DDD/BDD specs
-│   ├── solution-architect.md    # Architecture + ADRs
-│   ├── tech-lead.md             # Task decomposition
-│   ├── senior-developer.md      # TDD implementation
-│   ├── quality-gatekeeper.md    # Code + security review
-│   ├── qa-engineer.md           # Test coverage validation
-│   ├── devops-engineer.md       # Deployment + CI/CD
-│   ├── team-coordinator.md      # Team communication
-│   ├── performance-engineer.md  # Performance analysis
-│   ├── documentation-writer.md  # Documentation generation
-│   └── data-engineer.md         # Database operations (NEW v9.0)
+├── agents/                      # 12 Tool-Based Agents
+│   ├── orchestrator.md          # Central router (v10)
+│   ├── memory-keeper.md         # Memory coordinator (NEW v10)
+│   ├── code-analyzer.md         # Symbol lookup (NEW v10)
+│   ├── code-writer.md           # TDD implementation (NEW v10)
+│   ├── researcher.md            # External research (NEW v10)
+│   ├── doc-writer.md            # Documentation (NEW v10)
+│   ├── qa-validator.md          # Test coverage (NEW v10)
+│   ├── security-scanner.md      # OWASP scanning (NEW v10)
+│   ├── git-operator.md          # Git operations (NEW v10)
+│   ├── task-planner.md          # Task decomposition (NEW v10)
+│   ├── file-manager.md          # File operations (NEW v10)
+│   └── data-engineer.md         # Database operations
 │
-├── commands/                    # 12 Unified Commands
-│   ├── agents.md                # Smart router (entry point)
-│   ├── bug.md                   # Bug fix workflow
-│   ├── feature.md               # Feature workflow
+├── commands/                    # 16 Commands
+│   ├── agents.md                # Smart router (v10)
+│   ├── bug.md                   # Bug fix workflow (v10)
+│   ├── feature.md               # Feature workflow (v10)
 │   ├── hotfix.md                # Emergency hotfix
-│   ├── plan.md                  # Read-only analysis
-│   ├── refactor.md              # Refactor workflow
-│   ├── security.md              # Security workflow
-│   ├── git.md                   # Unified git operations
-│   ├── info.md                  # Unified info operations
-│   ├── quality.md               # Unified quality operations
-│   ├── session.md               # Unified session operations
-│   └── init.md                  # Project initialization (NEW v9.0)
+│   ├── plan.md                  # Read-only analysis (v10)
+│   ├── refactor.md              # Refactor workflow (v10)
+│   ├── security.md              # Security workflow (v10)
+│   ├── git.md                   # Git operations (v10)
+│   ├── info.md                  # Info queries
+│   ├── quality.md               # Quality checks (v10)
+│   ├── session.md               # Session management
+│   ├── resume.md                # Resume command (NEW v10)
+│   ├── research.md              # Research workflow (NEW v10)
+│   ├── docs.md                  # Documentation workflow (NEW v10)
+│   ├── data.md                  # Data workflow (NEW v10)
+│   └── init.md                  # Project initialization
 │
 ├── hooks/
 │   ├── hooks.json               # Hook registration
 │   ├── prompts/                 # Prompt-based hooks
-│   │   ├── checkpoint-reminder.md
-│   │   └── verify-agent-done.md
 │   └── scripts/                 # Shell script hooks
-│       ├── session-start.sh     # Initialize state
-│       ├── auto-router.sh       # Keyword classification
-│       ├── pre-tool-guard.sh    # Block dangerous ops
-│       ├── notify.sh            # Desktop notifications
-│       └── status-line.sh       # Progress updates
+│       ├── shared-memory-init.sh # Memory init (NEW v10)
+│       └── ...
 │
-└── skills/                      # Internal Libraries
-    ├── orchestration/           # Central routing
+└── skills/                      # 8 Skills
+    ├── lib-orchestration/       # Core orchestration (NEW v10)
     │   ├── SKILL.md
     │   └── references/
-    │       ├── boot-sequences.md
-    │       ├── output-formats.md
-    │       └── team-messaging.md
+    │       ├── intent-classification.md
+    │       ├── capability-mapping.md
+    │       ├── team-assembly.md
+    │       └── memory-protocol.md
+    ├── orchestration/           # Team dispatch
     ├── lib-router/              # Tool mapping
     ├── lib-workflow/            # Workflow classification
     ├── lib-domain/              # DDD/BDD patterns
-    │   ├── SKILL.md
-    │   └── references/
-    │       └── ...
     ├── lib-tdd/                 # TDD cycle
-    │   ├── SKILL.md
-    │   └── references/
-    │       └── ...
-    └── lib-intelligence/        # Snapshot, drift, impact
-        ├── SKILL.md
-        └── references/
-            └── memory-sync.md
+    └── lib-intelligence/        # Snapshot, drift
 ```
 
 ---
 
 ## Agents Reference
 
-### Agent Types
+### Agent Categories (with Dependency Levels)
 
-| Type | Model | Complexity | Use Case |
-|------|-------|------------|----------|
-| **Orchestrator** | sonnet | High | Routing, team assembly, context injection |
-| **Architect** | sonnet | High | Architecture design, ADRs, layer boundaries |
-| **Developer** | sonnet | High | TDD implementation, code generation |
-| **Analyst** | sonnet | Medium | DDD modeling, BDD scenarios |
-| **Reviewer** | sonnet | Medium | Code review, security validation |
-| **Support** | haiku | Low | Documentation, QA, coordination |
+| Category | Agents | Dependency Level | Purpose |
+|----------|--------|-----------------|---------|
+| **Core** | orchestrator, memory-keeper | Level 0 | Routing, coordination |
+| **Code** | code-analyzer, security-scanner | Level 0 | Analysis (parallel) |
+| **Code** | code-writer | Level 1 | Implementation (needs analysis) |
+| **Code** | qa-validator | Level 2 | Validation (needs code) |
+| **Research** | researcher | Level 0 | External information |
+| **Support** | doc-writer | Level 2 | Documentation (needs context) |
+| **Support** | git-operator | Level 2 | Git (needs qa approval) |
+| **Support** | task-planner, file-manager, data-engineer | Level 0-1 | Planning, file ops, DB |
 
-### Agent Details
+### Tool-Based Agent Details
 
-#### 1. orchestrator.md
+#### 1. orchestrator.md (v10)
 
 ```yaml
-Role: Central Router
+Role: Master Orchestrator
 Model: sonnet
-Tools: All (Read, Write, Edit, Bash, MCP)
+Tools: Read, Glob, Grep, Task, mcp__memory__*, mcp__sequentialthinking__*
 Responsibilities:
   - Classify user intent
-  - Select workflow type
-  - Assemble agent team
-  - Build dependency graph
-  - Inject context bundle
-  - Coordinate execution
-  - Handle gate events
-Invoked: Every command
+  - Map intent to capabilities
+  - Assemble dynamic team
+  - Coordinate memory
+  - Aggregate results
+Tool Priority: MCP > Plugins > Skills > Built-in
 ```
 
-#### 2. domain-analyst.md
+#### 2. memory-keeper.md (NEW v10)
 
 ```yaml
-Role: DDD/BDD Spec Creator
-Model: sonnet
-Tools: Read, Write, Grep, Glob, MCP (serena, memory)
-Responsibilities:
-  - Extract domain concepts
-  - Define bounded contexts
-  - Create ubiquitous language
-  - Write BDD scenarios (Given/When/Then)
-  - Generate spec.md
-Invoked: new_feature, bug_fix, architecture, spike
-Outputs:
-  - .specify/specs/{id}/spec.md
-  - BDD scenarios (3+ required for DoR gate)
-```
-
-#### 3. solution-architect.md
-
-```yaml
-Role: Architecture Designer
-Model: sonnet
-Tools: Read, Write, Grep, Glob, MCP (serena, memory)
-Responsibilities:
-  - Design system architecture
-  - Define layer boundaries
-  - Write ADRs (Architecture Decision Records)
-  - Generate plan.md
-  - Identify technical risks
-Invoked: new_feature, refactor, architecture
-Outputs:
-  - .specify/specs/{id}/plan.md
-  - .specify/memory/adr/{id}-*.md
-Gate: ArchReview (blocks if plan.md missing or ADRs incomplete)
-```
-
-#### 4. tech-lead.md
-
-```yaml
-Role: Task Decomposer
-Model: sonnet
-Tools: Read, Write, Grep, Glob, MCP (serena, memory)
-Responsibilities:
-  - Decompose plan into atomic tasks
-  - Define task dependencies
-  - Estimate effort (≤4h per task)
-  - Tag tasks with BDD references
-  - Mark [test-first] for TDD
-Invoked: new_feature, architecture
-Outputs:
-  - .specify/specs/{id}/tasks.md
-Gate: TaskReady (blocks if task >4h or no BDD reference)
-```
-
-#### 5. senior-developer.md
-
-```yaml
-Role: TDD Implementer
-Model: sonnet
-Tools: Read, Write, Edit, Bash, MCP (serena, context7)
-Responsibilities:
-  - Write failing tests first (RED)
-  - Implement minimum code (GREEN)
-  - Refactor for quality (REFACTOR)
-  - Run tests after each change
-  - Document complex logic
-Invoked: All code changes
-Workflow:
-  1. Read task from tasks.md
-  2. Find BDD scenario reference
-  3. Write test file first
-  4. Implement code
-  5. Run tests → all pass
-  6. Mark task [x] complete
-```
-
-#### 6. quality-gatekeeper.md
-
-```yaml
-Role: Code + Security Reviewer
-Model: sonnet
-Tools: Read, Grep, Glob, MCP (serena)
-Responsibilities:
-  - Code quality review
-  - Security pattern detection
-  - OWASP Top 10 validation
-  - Container validation
-  - CI/CD pipeline check
-Modes:
-  - quick: Code quality + critical security (default)
-  - full: Complete OWASP + container + CI/CD
-Invoked: After implementation
-Outputs:
-  - Quality report
-  - Security findings
-  - Recommendations
-Gate: DoD (blocks if issues found)
-```
-
-#### 7. qa-engineer.md
-
-```yaml
-Role: Test Coverage Validator
+Role: Memory Coordinator
 Model: haiku
-Tools: Read, Grep, Glob, Bash
+Tools: Read, Write, mcp__memory__*, mcp__serena__*_memory
 Responsibilities:
-  - Map BDD scenarios to tests
-  - Verify exact title match
-  - Run test suite
-  - Report coverage gaps
-  - Validate all scenarios covered
-Invoked: After quality gate
-Outputs:
-  - Coverage report
-  - Missing tests list
-Gate: BDDCoverage (blocks if scenario missing test)
+  - Manage TaskContext entities
+  - Create agent findings
+  - Query memory for coordination
+  - Fallback to file-based storage
 ```
 
-#### 8. devops-engineer.md
+#### 3. code-analyzer.md (NEW v10)
 
 ```yaml
-Role: Deployment Engineer
-Model: haiku
-Tools: Read, Write, Bash, MCP (serena)
-Responsibilities:
-  - Docker/container validation
-  - CI/CD pipeline configuration
-  - Infrastructure-as-code
-  - Deployment scripts
-  - Environment configuration
-Invoked: Before delivery (new_feature, architecture)
-Outputs:
-  - Dockerfile updates
-  - CI/CD config
-  - Deployment checklist
-```
-
-#### 9. team-coordinator.md
-
-```yaml
-Role: Team Communication
-Model: haiku
-Tools: Read, Write, Bash
-Responsibilities:
-  - Message routing between agents
-  - Shared task visibility
-  - Handoff coordination
-  - Session state management
-Invoked: Complex workflows
-Outputs:
-  - .specify/specs/{id}/team-messages.log
-```
-
-#### 10. performance-engineer.md
-
-```yaml
-Role: Performance Analyst
+Role: Code Analysis Specialist
 Model: sonnet
-Tools: Read, Grep, Glob, Bash
+Tools: Read, Glob, Grep, mcp__serena__find_symbol, mcp__serena__find_referencing_symbols
 Responsibilities:
-  - Performance profiling
-  - Bottleneck detection
-  - Load testing strategy
-  - Optimization recommendations
-Invoked: On-demand
-Outputs:
-  - Performance report
-  - Optimization plan
+  - Symbol lookup
+  - Reference finding
+  - Pattern search
+  - Write findings to memory
 ```
 
-#### 11. documentation-writer.md
+#### 4. code-writer.md (NEW v10)
 
 ```yaml
-Role: Documentation Generator
-Model: haiku
-Tools: Read, Write, Grep, Glob
+Role: TDD Implementation Specialist
+Model: sonnet
+Tools: Read, Write, Edit, Bash, mcp__serena__replace_symbol_body, mcp__context7__*
 Responsibilities:
-  - Generate API documentation
-  - Update README files
-  - Create user guides
-  - Document architecture
-Invoked: After delivery or on-demand
-Outputs:
-  - API docs
-  - README updates
-  - Architecture diagrams
+  - Follow RED-GREEN-REFACTOR
+  - Write failing test first
+  - Minimal implementation
+  - Use serena for symbol editing
+```
+
+#### 5. qa-validator.md (NEW v10)
+
+```yaml
+Role: Quality Assurance Specialist
+Model: sonnet
+Tools: Read, Glob, Grep, Bash, mcp__serena__*
+Responsibilities:
+  - Execute test suites
+  - Verify coverage >= 80%
+  - Validate BDD scenarios
+  - Run quality gates
+```
+
+#### 6. security-scanner.md (NEW v10)
+
+```yaml
+Role: Security Analysis Specialist
+Model: sonnet
+Tools: Read, Glob, Grep, mcp__serena__search_for_pattern
+Responsibilities:
+  - OWASP Top 10 detection
+  - Injection patterns
+  - Crypto failures
+  - Auth issues
+```
+
+#### 7. researcher.md (NEW v10)
+
+```yaml
+Role: Research Specialist
+Model: sonnet
+Tools: WebSearch, mcp__context7__*, mcp__web_reader__*, mcp__fetch__*, mcp__doc-forge__*
+Responsibilities:
+  - Library docs (context7)
+  - Web search
+  - URL analysis
+  - Document reading
+```
+
+#### 8. doc-writer.md (NEW v10)
+
+```yaml
+Role: Documentation Specialist
+Model: sonnet
+Tools: Read, Write, mcp__filesystem__*, mcp__doc-forge__*
+Responsibilities:
+  - Write markdown docs
+  - PDF generation
+  - Format conversion
+  - File operations
+```
+
+#### 9. git-operator.md (NEW v10)
+
+```yaml
+Role: Git Operations Specialist
+Model: sonnet
+Tools: Read, Bash, mcp__serena__*
+Safety:
+  - Read-only: auto-allowed
+  - Write: requires confirmation
+Responsibilities:
+  - Git status, diff, log
+  - PR generation
+  - Impact analysis
+```
+
+#### 10. task-planner.md (NEW v10)
+
+```yaml
+Role: Task Planning Specialist
+Model: sonnet
+Tools: Read, Write, mcp__sequentialthinking__*, TaskCreate, TaskGet, TaskUpdate, TaskList
+Responsibilities:
+  - Decompose tasks
+  - Define dependencies
+  - Create atomic tasks
+  - Write plan to memory
+```
+
+#### 11. file-manager.md (NEW v10)
+
+```yaml
+Role: File Operations Specialist
+Model: sonnet
+Tools: mcp__filesystem__* (all 15), Read, Write, Edit
+Responsibilities:
+  - Create/move/delete files
+  - Directory tree operations
+  - Search files by pattern
+  - Read media files
+```
+
+#### 12. data-engineer.md (Updated v10)
+
+```yaml
+Role: Database Operations Specialist
+Model: sonnet
+Tools: Read, Write, Edit, Bash, mcp__serena__*, mcp__memory__*
+Responsibilities:
+  - Database migrations
+  - Schema changes
+  - Query optimization
+  - ETL pipelines
 ```
 
 ---
@@ -425,375 +405,172 @@ Outputs:
 
 ### Command Architecture
 
-Each command is a **smart router** that:
+Each command is a **scoped orchestrator** that:
 1. Accepts natural language input
-2. Classifies intent
-3. Selects workflow
-4. Assembles team
-5. Executes with gates
+2. Routes to specific sub-agents
+3. Uses shared memory for coordination
+4. Returns aggregated results
 
-### Command: `/dev-stack:agents`
+### Quick Reference
 
-```yaml
-Type: Smart Router
-Purpose: Main entry point
-Behavior:
-  - Empty input → Show menu
-  - With input → Classify and route
-Classification:
-  bug/fix/error/issue → :bug
-  feature/add/new/implement → :feature
-  urgent/critical/hotfix → :hotfix
-  refactor/improve/clean → :refactor
-  security/vulnerability → :security
-  analyze/assess/plan → :plan
-Examples:
-  /dev-stack:agents fix login bug
-  /dev-stack:agents add user auth
-  /dev-stack:agents "production is down!"
-```
-
-### Command: `/dev-stack:bug`
-
-```yaml
-Type: Core Workflow
-Purpose: Bug fixes with TDD
-Team: domain-analyst → senior-developer → quality-gatekeeper → qa-engineer
-Gates: DoR, DoD
-Flow:
-  1. domain-analyst: Create minimal spec
-  2. senior-developer: TDD cycle (RED-GREEN-REFACTOR)
-  3. quality-gatekeeper: Quick review
-  4. qa-engineer: Validate tests
-Escalation:
-  - Security issue → /dev-stack:security
-  - Emergency → /dev-stack:hotfix
-Tools: Read, Write, Edit, Bash
-Time: 2-5 minutes
-```
-
-### Command: `/dev-stack:feature`
-
-```yaml
-Type: Core Workflow
-Purpose: New features with full DDD/BDD
-Team: Full team (all 11 agents)
-Gates: DoR → ArchReview → TaskReady → BDDCoverage → DoD
-Flow:
-  1. domain-analyst: spec.md with BDD scenarios
-  2. solution-architect: plan.md with ADRs
-  3. tech-lead: tasks.md with dependencies
-  4. senior-developer: TDD implementation
-  5. quality-gatekeeper: Full review
-  6. qa-engineer: Test validation
-  7. devops-engineer: Deployment prep
-Outputs:
-  - .specify/specs/{id}/spec.md
-  - .specify/specs/{id}/plan.md
-  - .specify/specs/{id}/tasks.md
-Tools: All
-Time: 30-60 minutes
-```
-
-### Command: `/dev-stack:hotfix`
-
-```yaml
-Type: Core Workflow
-Purpose: Emergency fixes (production down only)
-Team: senior-developer only
-Gates: NONE (bypasses all)
-Flow:
-  1. ⚠️ Confirm emergency
-  2. senior-developer: Direct fix
-  3. Manual verification
-  4. Document root cause
-Guards:
-  - Non-emergency → Reject, suggest /bug or /feature
-Bypassed:
-  - spec.md (❌)
-  - plan.md (❌)
-  - code review (❌)
-  - architecture review (❌)
-Warning: "⚠️ Hotfix mode - bypassing quality gates. Use only for emergencies."
-Tools: Read, Write, Edit, Bash
-Time: 5-15 minutes
-```
-
-### Command: `/dev-stack:plan`
-
-```yaml
-Type: Core Workflow
-Purpose: Read-only analysis (no code changes)
-Team: domain-analyst + solution-architect
-Gates: None (read-only)
-Flow:
-  1. Analyze scope
-  2. Identify affected files
-  3. Map dependencies
-  4. Assess risks
-  5. Estimate effort
-  6. Output: analysis.md
-Outputs:
-  - .specify/specs/{id}/analysis.md
-Constraint: 0 files modified
-Tools: Read, Grep, Glob (no Write)
-Time: 2-20 minutes
-```
-
-### Command: `/dev-stack:refactor`
-
-```yaml
-Type: Core Workflow
-Purpose: Code improvement (preserves behavior)
-Team: solution-architect → senior-developer → quality-gatekeeper
-Gates: ArchReview, DoD
-Flow:
-  1. Verify test coverage (if <80%, warn)
-  2. Extract in small steps
-  3. Run tests after each step
-  4. Verify behavior preserved
-  5. Code quality improved
-Guards:
-  - No tests → Block, require tests first
-Safety: High (test-verified)
-Tools: Read, Write, Edit, Bash
-Time: 15-30 minutes
-```
-
-### Command: `/dev-stack:security`
-
-```yaml
-Type: Core Workflow
-Purpose: Security patches with full OWASP
-Team: senior-developer → quality-gatekeeper (full) → qa-engineer
-Gates: DoR, DoD
-Flow:
-  1. Find vulnerability
-  2. Implement fix + input validation
-  3. Output encoding
-  4. Add security tests
-  5. OWASP validation (all 10 categories)
-  6. Security report
-OWASP Categories:
-  1. Injection
-  2. Broken Authentication
-  3. Sensitive Data Exposure
-  4. XML External Entities
-  5. Broken Access Control
-  6. Security Misconfiguration
-  7. Cross-Site Scripting
-  8. Insecure Deserialization
-  9. Using Components with Known Vulnerabilities
-  10. Insufficient Logging & Monitoring
-Tools: Read, Write, Edit, Bash
-Time: 10-20 minutes
-```
-
-### Command: `/dev-stack:git`
-
-```yaml
-Type: Unified Command
-Purpose: Git operations
-Team: devops-engineer
-Sub-operations:
-  impact    → Analyze change ripple effect
-  parallel  → Run multiple features in worktrees
-  pr        → Generate PR description from spec
-Classification:
-  "impact" OR "ripple" OR "affect" → git impact
-  "parallel" OR "simultaneous" → git parallel
-  "pr" OR "pull request" OR "merge" → git pr
-  default → git status
-Tools: Bash (git commands), Read
-Time: <500ms
-```
-
-### Command: `/dev-stack:info`
-
-```yaml
-Type: Unified Command
-Purpose: Information queries
-Team: documentation-writer
-Sub-operations:
-  adr     → Query architecture decisions
-  help    → Full command reference
-  status  → Show progress + velocity
-  tools   → Show available tools catalog
-Classification:
-  "adr" OR "architecture" OR "decision" → info adr
-  "help" OR "commands" → info help
-  "status" OR "progress" → info status
-  "tools" OR "catalog" → info tools
-  default → info help
-Tools: Read, Grep, Glob
-Time: <100ms
-```
-
-### Command: `/dev-stack:quality`
-
-```yaml
-Type: Unified Command
-Purpose: Quality checks
-Team: quality-gatekeeper
-Sub-operations:
-  audit   → Full security + quality scan
-  check   → Lint + typecheck + build
-  drift   → Detect spec vs code gaps
-  review  → Code review on files
-Classification:
-  "audit" OR "full" OR "owasp" → quality audit
-  "check" OR "lint" OR "build" → quality check
-  "drift" OR "gap" OR "sync" → quality drift
-  "review" OR "code review" → quality review
-  default → quality check
-Tools: Read, Grep, Glob, Bash
-Time: 10-60 seconds
-```
-
-### Command: `/dev-stack:session`
-
-```yaml
-Type: Unified Command
-Purpose: Session management
-Team: team-coordinator
-Sub-operations:
-  resume    → Resume pending feature
-  retro     → Run retrospective
-  snapshot  → Save session state
-Classification:
-  "resume" OR "continue" → session resume
-  "retro" OR "retrospective" → session retro
-  "snapshot" OR "save" → session snapshot
-  default → Show session menu
-Tools: Read, Write, Bash
-Time: <500ms
-```
+| Command | Scope | Team | Tools |
+|---------|-------|------|-------|
+| `/dev-stack:agents` | All | Dynamic | All |
+| `/dev-stack:bug` | Bug fixes | code-analyzer + code-writer + qa-validator | serena, memory |
+| `/dev-stack:feature` | New features | Full team (dynamic) | All |
+| `/dev-stack:hotfix` | Emergency | code-writer | Basic |
+| `/dev-stack:plan` | Analysis | code-analyzer + researcher | serena, context7 |
+| `/dev-stack:refactor` | Code improvement | code-analyzer + code-writer | serena |
+| `/dev-stack:security` | Security | security-scanner + code-writer | serena |
+| `/dev-stack:git` | Git ops | git-operator | Bash (git) |
+| `/dev-stack:research` | Research | researcher | context7, web_reader |
+| `/dev-stack:docs` | Documentation | doc-writer | doc-forge, filesystem |
+| `/dev-stack:data` | Database | data-engineer | serena, Bash |
+| `/dev-stack:quality` | Quality | qa-validator + security-scanner | serena, Bash |
+| `/dev-stack:resume` | Session | orchestrator + memory-keeper | memory |
 
 ---
 
 ## Skills Reference
 
-### Internal Libraries (6 skills)
+### Internal Libraries (8 skills)
 
-| Skill | Purpose | Entry Point |
-|-------|---------|-------------|
-| `orchestration` | MODE routing, team dispatch, output formats | `skill:dev-stack:orchestration` |
-| `lib-router` | AI-optimized tool mapping | `skill:dev-stack:lib-router(intent)` |
-| `lib-workflow` | Workflow classification, dependency graphs | `skill:dev-stack:lib-workflow(req)` |
-| `lib-domain` | DDD modeling, BDD authoring | `skill:dev-stack:lib-domain` |
-| `lib-tdd` | TDD cycle, constitution builder | `skill:dev-stack:lib-tdd` |
-| `lib-intelligence` | Snapshot, drift, impact, PR | `skill:dev-stack:lib-intelligence(fn)` |
+| Skill | Purpose | New in v10 |
+|-------|---------|------------|
+| `lib-orchestration` | Intent classification, capability mapping, team assembly, memory protocol | ✅ |
+| `orchestration` | MODE routing, team dispatch | |
+| `lib-router` | Tool mapping | |
+| `lib-workflow` | Workflow classification | |
+| `lib-domain` | DDD modeling, BDD authoring | |
+| `lib-tdd` | TDD cycle | |
+| `lib-intelligence` | Snapshot, drift, impact | |
 
-### lib-router Tool Mapping
+---
+
+## Shared Memory Protocol
+
+### Entity Types
+
+```yaml
+TaskContext:
+  name: "task_{timestamp}"
+  entityType: "TaskContext"
+  observations:
+    - "Intent: {classified_intent}"
+    - "Original request: {user_input}"
+    - "[agent_name] [action] {details}"
+  relations:
+    - "depends_on: {other_task}"
+```
+
+### Memory Operations
+
+```javascript
+// Create task context
+mcp__memory__create_entities({
+  "entities": [{
+    "name": "task_20260301_fix_login",
+    "entityType": "TaskContext",
+    "observations": ["Intent: bug_fix", "Original request: fix login bug"]
+  }]
+})
+
+// Add agent findings
+mcp__memory__add_observations({
+  "observations": [{
+    "entityName": "task_20260301_fix_login",
+    "contents": [
+      "[code-analyzer] [root_cause] Email validation regex too strict",
+      "[code-writer] [fix_applied] Updated regex pattern"
+    ]
+  }]
+})
+
+// Read context
+mcp__memory__open_nodes({
+  "names": ["task_20260301_fix_login"]
+})
+```
+
+---
+
+## Tool Priority
+
+### Priority Hierarchy
+
+```
+1️⃣ MCP SERVERS (Primary)
+   ├─ serena: Symbol-aware code operations
+   ├─ memory: Knowledge graph
+   ├─ context7: Library documentation
+   ├─ filesystem: File operations
+   ├─ doc-forge: Document processing
+   └─ web_reader: URL analysis
+
+2️⃣ PLUGIN TOOLS (Secondary)
+   └─ superpowers: TDD, debugging, etc.
+
+3️⃣ SKILL TOOLS (Tertiary)
+   └─ dev-stack skills
+
+4️⃣ BUILT-IN (Fallback)
+   ├─ Read, Write, Edit
+   ├─ Glob, Grep
+   └─ Bash
+```
+
+### Tool Selection Example
 
 ```yaml
 code_read:
-  primary: mcp__serena__find_symbol
-  fallback: Read
+  primary: mcp__serena__find_symbol    # Try first
+  fallback: Read                        # If serena unavailable
 
 code_edit:
   primary: mcp__serena__replace_symbol_body
   fallback: Edit
 
-code_refs:
-  primary: mcp__serena__find_referencing_symbols
-  fallback: Grep
-
-bug_fix:
-  find: code_read
-  fix: code_edit
-  verify: code_refs
+web_research:
+  primary: mcp__context7__query-docs
+  secondary: mcp__web_reader__webReader
+  tertiary: WebSearch
 ```
 
 ---
 
-## Hooks Reference
+## Git Safety Policy
 
-### Event Hooks (5 hooks)
-
-| Hook | Event | Script | Purpose |
-|------|-------|--------|---------|
-| SessionStart | Session start | session-start.sh | Initialize state, check onboarding |
-| UserPromptSubmit | User prompt | auto-router.sh | Keyword classification, fast-path routing |
-| PreToolUse | Before tool | pre-tool-guard.sh | Block dangerous operations |
-| PostToolUse | After tool | status-line.sh | Update progress indicator |
-| Notification | Events | notify.sh | Desktop notifications |
-
-### PreToolUse Guards
+### Auto-Allowed (Read-Only)
 
 ```bash
-# Blocked operations:
-rm -rf                    # Recursive delete
-git push --force          # Force push
-git reset --hard          # Hard reset
-DROP TABLE                # SQL destructive
-rm -rf .specify/          # Protect spec directory
+git status
+git diff
+git log
+git branch
+git show
+git reflog
+git ls-files
 ```
 
----
+### Requires User Confirmation
 
-## Workflow Classification
-
-### Classification Logic
-
-```
-1. FAST-PATH CHECK (keywords):
-   "bug|fix|error|issue" → bug_fix (confidence: 0.9)
-   "feature|add|new|implement" → new_feature (confidence: 0.9)
-   "urgent|critical|hotfix|production down" → hotfix (confidence: 1.0)
-   "refactor|improve|clean|restructure" → refactor (confidence: 0.85)
-   "security|vulnerability|OWASP|CVE" → security_patch (confidence: 0.95)
-   "analyze|assess|plan|design" → architecture (confidence: 0.8)
-   "research|spike|POC|proof of concept" → spike (confidence: 0.8)
-
-2. SEQUENTIAL THINKING (if confidence < 0.5):
-   - Use mcp__sequentialthinking to analyze
-   - Consider context and ambiguity
-   - Make best-effort classification
-
-3. WORKFLOW SELECTION:
-   - confidence >= 0.5 → Use classified workflow
-   - confidence < 0.5 → Ask user for clarification
+```bash
+git commit          # ⚠️ ASK before executing
+git push            # ⚠️ ASK before executing
+git reset --hard    # ⚠️ ASK before executing
+git commit --amend  # ⚠️ ASK before executing
+git push --force    # ⚠️ ASK before executing
 ```
 
-### Workflow Team Composition
+### PreToolUse Hook
 
-| Workflow | Team | Gates | Avg Time |
-|----------|------|-------|----------|
-| new_feature | domain + architect + tech-lead + dev + gate + qa + devops | All 5 | 30-60 min |
-| bug_fix | domain + dev + gate + qa | DoR, DoD | 2-5 min |
-| hotfix | dev only | None | 5-15 min |
-| refactor | architect + dev + gate | ArchReview, DoD | 15-30 min |
-| security_patch | dev + gate (full) + qa | DoR, DoD | 10-20 min |
-| architecture | Full team | All 5 | 30-60 min |
-| spike | domain only | None | 10-30 min |
-
----
-
-## Quality Gates
-
-### Gate Pipeline
-
+```bash
+# In hooks/scripts/pre-tool-guard.sh
+if [[ "$tool" == "Bash" && "$command" =~ git\ (commit|push) ]]; then
+  echo "⚠️ Git operation requires confirmation"
+  exit 1  # Block until user confirms
+fi
 ```
-┌───────┐    ┌────────────┐    ┌────────────┐    ┌───────────┐    ┌───────┐
-│  DoR  │───▶│ ArchReview │───▶│ TaskReady  │───▶│ BDDCover  │───▶│  DoD  │
-└───────┘    └────────────┘    └────────────┘    └───────────┘    └───────┘
-    │              │                 │                 │             │
-    ▼              ▼                 ▼                 ▼             ▼
- spec.md       plan.md           tasks.md         test files    all pass
- exists        + ADRs            + BDD refs       + coverage     + build
- 3+ BDD        + layers          + [test-first]   100% match     passes
-```
-
-### Gate Criteria
-
-| Gate | Criteria | Blocks Agent |
-|------|----------|--------------|
-| **DoR** | spec.md exists, no `[NEEDS CLARIFICATION]`, 3+ BDD scenarios | domain-analyst |
-| **ArchReview** | plan.md exists, ADRs documented, layer boundaries defined | solution-architect |
-| **TaskReady** | BDD reference, `[test-first]` tag, single layer, ≤4h estimate | tech-lead |
-| **BDDCoverage** | Every BDD scenario has test, exact titles match | qa-engineer |
-| **DoD** | All gates pass, all tasks [x], compile + lint + typecheck PASS | Final delivery |
 
 ---
 
@@ -803,34 +580,15 @@ rm -rf .specify/          # Protect spec directory
 
 ```
 .specify/
-├── memory/
-│   └── constitution.md      # Project conventions (auto-generated)
+├── memory/                      # Shared memory fallback (v10)
+│   ├── index.json
+│   └── task_*.json
 ├── specs/
 │   └── 001-feature-name/
-│       ├── spec.md          # Requirements + BDD scenarios
-│       ├── plan.md          # Architecture + ADRs
-│       ├── tasks.md         # Implementation checklist
-│       ├── analysis.md      # Plan mode output (optional)
-│       └── team-messages.log
-```
-
-### Constitution Template
-
-```markdown
-# Project Constitution
-
-## Principles
-- Use TypeScript for all new code
-- Follow TDD for all features
-- All code must pass lint, typecheck, and tests
-
-## Architecture
-- Layered architecture (domain, application, infrastructure)
-- Dependency injection for services
-- Repository pattern for data access
-
-## Learnings
-- [Updated from retrospectives]
+│       ├── spec.md
+│       ├── plan.md
+│       └── tasks.md
+└── adr/                         # Architecture Decision Records
 ```
 
 ---
@@ -839,20 +597,21 @@ rm -rf .specify/          # Protect spec directory
 
 ### Required MCP Servers
 
-| Server | Purpose | Required |
-|--------|---------|----------|
-| `serena` | Symbol-aware code operations | No (falls back to built-in) |
-| `memory` | Knowledge graph for patterns | No |
-| `sequentialthinking` | Semantic analysis | No |
+| Server | Tools | Purpose |
+|--------|-------|---------|
+| `serena` | 26+ | Symbol-aware code operations |
+| `memory` | 9 | Knowledge graph for coordination |
+| `sequentialthinking` | 1 | Semantic analysis |
 
 ### Optional MCP Servers
 
-| Server | Purpose |
-|--------|---------|
-| `context7` | Library documentation lookup |
-| `fetch` | Web content fetching |
-| `filesystem` | Advanced file operations |
-| `ide` | IDE integration |
+| Server | Tools | Purpose |
+|--------|-------|---------|
+| `context7` | 2 | Library documentation |
+| `filesystem` | 15 | Advanced file operations |
+| `doc-forge` | 16 | Document processing |
+| `web_reader` | 1 | URL analysis |
+| `fetch` | 1 | Web content |
 
 ---
 
@@ -860,14 +619,12 @@ rm -rf .specify/          # Protect spec directory
 
 | Version | Date | Key Changes |
 |---------|------|-------------|
-| 9.0.0 | 2026-03-01 | Hybrid Architecture: 145 tools, 12 agents, 12 commands, 7 skills, 6 hooks |
-| 8.0.0 | 2026-03-01 | 11 unified commands (down from 21) |
-| 7.7.0 | 2026-03-01 | Interactive menu |
+| **10.0.0** | 2026-03-01 | **Tool-Based Architecture**: 12 specialized agents, shared memory, dynamic teams, tool priority |
+| 9.0.0 | 2026-03-01 | Hybrid Architecture: 145 tools, 12 agents |
+| 8.0.0 | 2026-03-01 | 11 unified commands |
 | 7.0.0 | 2026-03-01 | Major rewrite, 11 agents |
-| 6.x | 2026-02-28 | Pre-v7 architecture |
-| 1.0.0 | 2026-02-20 | Initial version |
 
 ---
 
 *Last updated: 2026-03-01*
-*Plugin version: 9.0.0*
+*Plugin version: 10.0.0*

@@ -5,18 +5,18 @@
     "email": ""
   },
   "metadata": {
-    "description": "Hybrid Architecture dev orchestration — 145 tools integration with auto-routing, quality gates, and pre-commit hooks",
-    "version": "9.0.0",
+    "description": "Tool-Based Agent Architecture — 12 specialized agents with 145+ MCP tools, dynamic team assembly, and shared memory coordination",
+    "version": "10.0.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
       "name": "dev-stack",
       "source": "./plugins/dev-stack",
-      "description": "Hybrid Architecture dev orchestration — 145 tools integration (serena, memory, context7, doc-forge) with auto-routing, quality gates, and pre-commit hooks. Features: init command, test strategies skill, data engineer agent",
-      "version": "9.0.0",
+      "description": "Tool-Based Agent Architecture v10 — 12 specialized agents (orchestrator, memory-keeper, code-analyzer, code-writer, researcher, doc-writer, qa-validator, security-scanner, git-operator, task-planner, file-manager, data-engineer) with 145+ MCP tools. Features: Dynamic team assembly, shared memory protocol, tool priority (MCP > Plugins > Skills > Built-in), Git safety policy",
+      "version": "10.0.0",
       "author": { "name": "dev-stack" },
-      "keywords": ["orchestration", "tdd", "bdd", "ddd", "automation", "workflow", "owasp", "security", "performance"],
+      "keywords": ["orchestration", "tool-based-agents", "dynamic-team", "shared-memory", "tdd", "bdd", "ddd", "automation", "owasp", "security", "mcp-tools"],
       "category": "productivity",
       "strict": true
     }

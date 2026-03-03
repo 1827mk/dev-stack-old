@@ -1,7 +1,7 @@
 {
   "name": "dev-stack",
-  "version": "9.0.0",
-  "description": "Hybrid Architecture dev orchestration — 145 tools integration with Smart Router + Mixed Modules. /dev-stack:agents {task} routes to best workflow automatically",
+  "version": "10.0.0",
+  "description": "Tool-Based Agent Architecture — 12 specialized agents with 145+ MCP tools, dynamic team assembly, shared memory protocol. /dev-stack:agents <task> auto-routes to best team",
   "author": { "name": "dev-stack" },
-  "keywords": ["orchestration", "tdd", "bdd", "ddd", "automation", "workflow", "owasp", "security", "performance", "hybrid-architecture", "serena", "memory-mcp"]
+  "keywords": ["orchestration", "tool-based-agents", "dynamic-team", "shared-memory", "tdd", "bdd", "ddd", "automation", "owasp", "security", "mcp-tools", "serena", "memory-protocol"]
 }
